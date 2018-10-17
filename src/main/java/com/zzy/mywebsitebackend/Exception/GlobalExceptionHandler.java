@@ -15,12 +15,14 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ExceptionAopTarget
     public ResponseEntity MethodArgumentErrorHandler(HttpServletRequest request,MethodArgumentNotValidException e){
-        return  new ResponseEntity(e.getMessage(),HttpStatus.BAD_REQUEST);
+        e.printStackTrace();
+        return  new ResponseEntity(e.getClass().getName()+":"+e.getMessage(),HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(Exception.class)
     @ExceptionAopTarget
     public ResponseEntity DefaultErrorHandler(HttpServletRequest request,Exception e) {
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        e.printStackTrace();
+        return new ResponseEntity<>(e.getClass().getName()+":"+e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

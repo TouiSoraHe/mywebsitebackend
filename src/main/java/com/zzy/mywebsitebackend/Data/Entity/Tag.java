@@ -5,9 +5,9 @@ public class Tag {
 
     private String tag_name;
 
-    private String tag_img;
+    private byte[] img_url;
 
-    private String blog_info_id;
+    private byte[] blog_info_id;
 
     public Integer getId() {
         return id;
@@ -25,19 +25,19 @@ public class Tag {
         this.tag_name = tag_name == null ? null : tag_name.trim();
     }
 
-    public String getTag_img() {
-        return tag_img;
+    public byte[] getImg_url() {
+        return img_url;
     }
 
-    public void setTag_img(String tag_img) {
-        this.tag_img = tag_img == null ? null : tag_img.trim();
+    public void setImg_url(byte[] img_url) {
+        this.img_url = img_url;
     }
 
-    public String getBlog_info_id() {
+    public byte[] getBlog_info_id() {
         return blog_info_id;
     }
 
-    public void setBlog_info_id(String blog_info_id) {
-        this.blog_info_id = blog_info_id == null ? null : blog_info_id.trim();
+    public void setBlog_info_id(byte[] blog_info_id) {
+        this.blog_info_id = blog_info_id;
     }
 }

@@ -1,15 +1,10 @@
 package com.zzy.mywebsitebackend.Data.Mapper;
 
 import com.zzy.mywebsitebackend.Data.Entity.BlogInfo;
-import java.util.List;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Options;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.type.JdbcType;
+
+import java.util.List;
 
 public interface BlogInfoMapper {
     @Delete({
@@ -20,21 +15,23 @@ public interface BlogInfoMapper {
 
     @Insert({
         "insert into blog_info (title, time, ",
-        "views, words, img_url, ",
-        "tags, blog_id, last_modified, ",
-        "deleted, summary)",
+        "views, words, blog_id, ",
+        "last_modified, deleted, ",
+        "summary, img_url, ",
+        "tags)",
         "values (#{title,jdbcType=VARCHAR}, #{time,jdbcType=TIMESTAMP}, ",
-        "#{views,jdbcType=INTEGER}, #{words,jdbcType=INTEGER}, #{img_url,jdbcType=VARCHAR}, ",
-        "#{tags,jdbcType=VARCHAR}, #{blog_id,jdbcType=INTEGER}, #{last_modified,jdbcType=TIMESTAMP}, ",
-        "#{deleted,jdbcType=BIT}, #{summary,jdbcType=LONGVARCHAR})"
+        "#{views,jdbcType=INTEGER}, #{words,jdbcType=INTEGER}, #{blog_id,jdbcType=INTEGER}, ",
+        "#{last_modified,jdbcType=TIMESTAMP}, #{deleted,jdbcType=BIT}, ",
+        "#{summary,jdbcType=LONGVARCHAR}, #{img_url,jdbcType=LONGVARBINARY}, ",
+        "#{tags,jdbcType=LONGVARBINARY})"
     })
     @Options(useGeneratedKeys=true,keyProperty="id")
     int insert(BlogInfo record);
 
     @Select({
         "select",
-        "id, title, time, views, words, img_url, tags, blog_id, last_modified, deleted, ",
-        "summary",
+        "id, title, time, views, words, blog_id, last_modified, deleted, summary, img_url, ",
+        "tags",
         "from blog_info",
         "where id = #{id,jdbcType=INTEGER}"
     })
@@ -44,19 +41,19 @@ public interface BlogInfoMapper {
         @Result(column="time", property="time", jdbcType=JdbcType.TIMESTAMP),
         @Result(column="views", property="views", jdbcType=JdbcType.INTEGER),
         @Result(column="words", property="words", jdbcType=JdbcType.INTEGER),
-        @Result(column="img_url", property="img_url", jdbcType=JdbcType.VARCHAR),
-        @Result(column="tags", property="tags", jdbcType=JdbcType.VARCHAR),
         @Result(column="blog_id", property="blog_id", jdbcType=JdbcType.INTEGER),
         @Result(column="last_modified", property="last_modified", jdbcType=JdbcType.TIMESTAMP),
         @Result(column="deleted", property="deleted", jdbcType=JdbcType.BIT),
-        @Result(column="summary", property="summary", jdbcType=JdbcType.LONGVARCHAR)
+        @Result(column="summary", property="summary", jdbcType=JdbcType.LONGVARCHAR),
+        @Result(column="img_url", property="img_url", jdbcType=JdbcType.LONGVARBINARY),
+        @Result(column="tags", property="tags", jdbcType=JdbcType.LONGVARBINARY)
     })
     BlogInfo selectByPrimaryKey(Integer id);
 
     @Select({
         "select",
-        "id, title, time, views, words, img_url, tags, blog_id, last_modified, deleted, ",
-        "summary",
+        "id, title, time, views, words, blog_id, last_modified, deleted, summary, img_url, ",
+        "tags",
         "from blog_info"
     })
     @Results({
@@ -65,12 +62,12 @@ public interface BlogInfoMapper {
         @Result(column="time", property="time", jdbcType=JdbcType.TIMESTAMP),
         @Result(column="views", property="views", jdbcType=JdbcType.INTEGER),
         @Result(column="words", property="words", jdbcType=JdbcType.INTEGER),
-        @Result(column="img_url", property="img_url", jdbcType=JdbcType.VARCHAR),
-        @Result(column="tags", property="tags", jdbcType=JdbcType.VARCHAR),
         @Result(column="blog_id", property="blog_id", jdbcType=JdbcType.INTEGER),
         @Result(column="last_modified", property="last_modified", jdbcType=JdbcType.TIMESTAMP),
         @Result(column="deleted", property="deleted", jdbcType=JdbcType.BIT),
-        @Result(column="summary", property="summary", jdbcType=JdbcType.LONGVARCHAR)
+        @Result(column="summary", property="summary", jdbcType=JdbcType.LONGVARCHAR),
+        @Result(column="img_url", property="img_url", jdbcType=JdbcType.LONGVARBINARY),
+        @Result(column="tags", property="tags", jdbcType=JdbcType.LONGVARBINARY)
     })
     List<BlogInfo> selectAll();
 
@@ -80,12 +77,12 @@ public interface BlogInfoMapper {
           "time = #{time,jdbcType=TIMESTAMP},",
           "views = #{views,jdbcType=INTEGER},",
           "words = #{words,jdbcType=INTEGER},",
-          "img_url = #{img_url,jdbcType=VARCHAR},",
-          "tags = #{tags,jdbcType=VARCHAR},",
           "blog_id = #{blog_id,jdbcType=INTEGER},",
           "last_modified = #{last_modified,jdbcType=TIMESTAMP},",
           "deleted = #{deleted,jdbcType=BIT},",
-          "summary = #{summary,jdbcType=LONGVARCHAR}",
+          "summary = #{summary,jdbcType=LONGVARCHAR},",
+          "img_url = #{img_url,jdbcType=LONGVARBINARY},",
+          "tags = #{tags,jdbcType=LONGVARBINARY}",
         "where id = #{id,jdbcType=INTEGER}"
     })
     int updateByPrimaryKey(BlogInfo record);

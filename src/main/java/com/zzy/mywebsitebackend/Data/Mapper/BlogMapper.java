@@ -15,20 +15,20 @@ public interface BlogMapper {
 
     @Insert({
         "insert into blog (title, time, ",
-        "views, words, tags, ",
-        "last_modified, deleted, ",
-        "content, img_url)",
+        "views, words, last_modified, ",
+        "deleted, content, ",
+        "img_url, tags)",
         "values (#{title,jdbcType=VARCHAR}, #{time,jdbcType=TIMESTAMP}, ",
-        "#{views,jdbcType=INTEGER}, #{words,jdbcType=INTEGER}, #{tags,jdbcType=VARCHAR}, ",
-        "#{last_modified,jdbcType=TIMESTAMP}, #{deleted,jdbcType=BIT}, ",
-        "#{content,jdbcType=LONGVARCHAR}, #{img_url,jdbcType=LONGVARBINARY})"
+        "#{views,jdbcType=INTEGER}, #{words,jdbcType=INTEGER}, #{last_modified,jdbcType=TIMESTAMP}, ",
+        "#{deleted,jdbcType=BIT}, #{content,jdbcType=LONGVARCHAR}, ",
+        "#{img_url,jdbcType=LONGVARBINARY}, #{tags,jdbcType=LONGVARBINARY})"
     })
     @Options(useGeneratedKeys=true,keyProperty="id")
     int insert(Blog record);
 
     @Select({
         "select",
-        "id, title, time, views, words, tags, last_modified, deleted, content, img_url",
+        "id, title, time, views, words, last_modified, deleted, content, img_url, tags",
         "from blog",
         "where id = #{id,jdbcType=INTEGER}"
     })
@@ -38,17 +38,17 @@ public interface BlogMapper {
         @Result(column="time", property="time", jdbcType=JdbcType.TIMESTAMP),
         @Result(column="views", property="views", jdbcType=JdbcType.INTEGER),
         @Result(column="words", property="words", jdbcType=JdbcType.INTEGER),
-        @Result(column="tags", property="tags", jdbcType=JdbcType.VARCHAR),
         @Result(column="last_modified", property="last_modified", jdbcType=JdbcType.TIMESTAMP),
         @Result(column="deleted", property="deleted", jdbcType=JdbcType.BIT),
         @Result(column="content", property="content", jdbcType=JdbcType.LONGVARCHAR),
-        @Result(column="img_url", property="img_url", jdbcType=JdbcType.LONGVARBINARY)
+        @Result(column="img_url", property="img_url", jdbcType=JdbcType.LONGVARBINARY),
+        @Result(column="tags", property="tags", jdbcType=JdbcType.LONGVARBINARY)
     })
     Blog selectByPrimaryKey(Integer id);
 
     @Select({
         "select",
-        "id, title, time, views, words, tags, last_modified, deleted, content, img_url",
+        "id, title, time, views, words, last_modified, deleted, content, img_url, tags",
         "from blog"
     })
     @Results({
@@ -57,11 +57,11 @@ public interface BlogMapper {
         @Result(column="time", property="time", jdbcType=JdbcType.TIMESTAMP),
         @Result(column="views", property="views", jdbcType=JdbcType.INTEGER),
         @Result(column="words", property="words", jdbcType=JdbcType.INTEGER),
-        @Result(column="tags", property="tags", jdbcType=JdbcType.VARCHAR),
         @Result(column="last_modified", property="last_modified", jdbcType=JdbcType.TIMESTAMP),
         @Result(column="deleted", property="deleted", jdbcType=JdbcType.BIT),
         @Result(column="content", property="content", jdbcType=JdbcType.LONGVARCHAR),
-        @Result(column="img_url", property="img_url", jdbcType=JdbcType.LONGVARBINARY)
+        @Result(column="img_url", property="img_url", jdbcType=JdbcType.LONGVARBINARY),
+        @Result(column="tags", property="tags", jdbcType=JdbcType.LONGVARBINARY)
     })
     List<Blog> selectAll();
 
@@ -71,11 +71,11 @@ public interface BlogMapper {
           "time = #{time,jdbcType=TIMESTAMP},",
           "views = #{views,jdbcType=INTEGER},",
           "words = #{words,jdbcType=INTEGER},",
-          "tags = #{tags,jdbcType=VARCHAR},",
           "last_modified = #{last_modified,jdbcType=TIMESTAMP},",
           "deleted = #{deleted,jdbcType=BIT},",
           "content = #{content,jdbcType=LONGVARCHAR},",
-          "img_url = #{img_url,jdbcType=LONGVARBINARY}",
+          "img_url = #{img_url,jdbcType=LONGVARBINARY},",
+          "tags = #{tags,jdbcType=LONGVARBINARY}",
         "where id = #{id,jdbcType=INTEGER}"
     })
     int updateByPrimaryKey(Blog record);

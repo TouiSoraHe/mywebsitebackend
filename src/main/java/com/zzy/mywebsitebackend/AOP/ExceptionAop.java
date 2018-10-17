@@ -23,7 +23,7 @@ public class ExceptionAop {
     @ResponseBody
     public ResponseEntity ExceptionAround(ProceedingJoinPoint joinPoint,Exception e,HttpServletRequest request) throws Throwable {
         ResponseEntity responseEntity = (ResponseEntity) joinPoint.proceed();
-        log.info("IP:"+request.getRemoteAddr()+"  URI:"+request.getRequestURI());
+        log.info("IP:"+request.getRemoteAddr()+"  URI:"+request.getRequestURI()+" method:"+request.getMethod());
         log.error(responseEntity.getBody().toString());
         return responseEntity;
     }

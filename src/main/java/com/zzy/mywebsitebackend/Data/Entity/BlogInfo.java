@@ -13,10 +13,6 @@ public class BlogInfo {
 
     private Integer words;
 
-    private String img_url;
-
-    private String tags;
-
     private Integer blog_id;
 
     private Date last_modified;
@@ -24,6 +20,10 @@ public class BlogInfo {
     private Boolean deleted;
 
     private String summary;
+
+    private byte[] img_url;
+
+    private byte[] tags;
 
     public Integer getId() {
         return id;
@@ -65,22 +65,6 @@ public class BlogInfo {
         this.words = words;
     }
 
-    public String getImg_url() {
-        return img_url;
-    }
-
-    public void setImg_url(String img_url) {
-        this.img_url = img_url == null ? null : img_url.trim();
-    }
-
-    public String getTags() {
-        return tags;
-    }
-
-    public void setTags(String tags) {
-        this.tags = tags == null ? null : tags.trim();
-    }
-
     public Integer getBlog_id() {
         return blog_id;
     }
@@ -111,5 +95,21 @@ public class BlogInfo {
 
     public void setSummary(String summary) {
         this.summary = summary == null ? null : summary.trim();
+    }
+
+    public byte[] getImg_url() {
+        return img_url;
+    }
+
+    public void setImg_url(byte[] img_url) {
+        this.img_url = img_url;
+    }
+
+    public byte[] getTags() {
+        return tags;
+    }
+
+    public void setTags(byte[] tags) {
+        this.tags = tags;
     }
 }

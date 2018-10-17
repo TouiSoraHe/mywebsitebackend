@@ -1,8 +1,5 @@
 package com.zzy.mywebsitebackend.Data.Entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import javax.validation.constraints.Pattern;
 import java.util.Date;
 
 public class Blog {
@@ -16,17 +13,15 @@ public class Blog {
 
     private Integer words;
 
-    @Pattern(regexp = "^\\d+(\\|\\d+)*|$")
-    private String tags;
-
     private Date last_modified;
 
     private Boolean deleted;
 
     private String content;
 
-    @JsonIgnore
     private byte[] img_url;
+
+    private byte[] tags;
 
     public Integer getId() {
         return id;
@@ -68,14 +63,6 @@ public class Blog {
         this.words = words;
     }
 
-    public String getTags() {
-        return tags;
-    }
-
-    public void setTags(String tags) {
-        this.tags = tags == null ? null : tags.trim();
-    }
-
     public Date getLast_modified() {
         return last_modified;
     }
@@ -106,5 +93,13 @@ public class Blog {
 
     public void setImg_url(byte[] img_url) {
         this.img_url = img_url;
+    }
+
+    public byte[] getTags() {
+        return tags;
+    }
+
+    public void setTags(byte[] tags) {
+        this.tags = tags;
     }
 }
