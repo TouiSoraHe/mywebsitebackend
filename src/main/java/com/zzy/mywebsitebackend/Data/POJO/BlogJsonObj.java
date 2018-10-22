@@ -19,7 +19,7 @@ public class BlogJsonObj {
 
     private Integer words;
 
-    private Integer[] tags;
+    private TagJsonObj[] tags;
 
     private Date lastModified;
 
@@ -42,7 +42,7 @@ public class BlogJsonObj {
         this.lastModified = blog.getLast_modified();
         this.deleted = blog.getDeleted();
         this.content = blog.getContent();
-        this.tags = JSON.parseObject(blog.getTags(), Integer[].class);
+        this.tags = JSON.parseObject(blog.getTags(), TagJsonObj[].class);
         this.bgImg = JSON.parseObject(blog.getImg_url(),ImgUrl.class);
     }
 
@@ -101,11 +101,11 @@ public class BlogJsonObj {
         this.words = words;
     }
 
-    public Integer[] getTags() {
+    public TagJsonObj[] getTags() {
         return tags;
     }
 
-    public void setTags(Integer[] tags) {
+    public void setTags(TagJsonObj[] tags) {
         this.tags = tags;
     }
 
