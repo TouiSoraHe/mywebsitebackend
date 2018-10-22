@@ -34,11 +34,15 @@ public class CodeGenerateUtils {
         root.put("entityClassName", clas.getSimpleName().replaceAll("Mapper",""));
         File javaFile = new File("src/main/java/com/zzy/mywebsitebackend/Service", clas.getSimpleName().replaceAll("Mapper","") + "Service.java");
         if (javaFile != null) {
-            Writer javaWriter = new FileWriter(javaFile);
-            template.process(root, javaWriter);
-            javaWriter.flush();
-            System.out.println("文件生成路径：" + javaFile.getCanonicalPath());
-            javaWriter.close();
+            if(!javaFile.exists()){
+                Writer javaWriter = new FileWriter(javaFile);
+                template.process(root, javaWriter);
+                javaWriter.flush();
+                System.out.println("文件生成路径：" + javaFile.getCanonicalPath());
+                javaWriter.close();
+            }else{
+                System.out.println(javaFile.getCanonicalPath()+"文件已经存在");
+            }
         }
     }
 }
