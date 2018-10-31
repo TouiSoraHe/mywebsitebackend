@@ -1,41 +1,54 @@
-package com.zzy.mywebsitebackend.Data.POJO;
+package com.zzy.mywebsitebackend.Data.JsonObj;
 
 import com.alibaba.fastjson.JSON;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.zzy.mywebsitebackend.Data.Entity.BlogInfo;
+import com.zzy.mywebsitebackend.Data.POJO.ImgUrl;
+import com.zzy.mywebsitebackend.Service.ArchiveService;
+import com.zzy.mywebsitebackend.Service.TagService;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 public class BlogInfoJsonObj {
     private Integer id;
 
-    @NotBlank
+    @NotBlank(message = "title不能为空")
     private String title;
 
-    private Date time;
+    private Date time = new Date();
 
     private Integer views = 0;
 
-    private Integer words;
+    private Integer words = 0;
 
-    private TagJsonObj[] tags;
+    @NotNull(message = "tags不能为null")
+    private TagJsonObj[] tags = new TagJsonObj[0];
 
     private Integer blogId;
 
-    private Date lastModified;
+    private Date lastModified = new Date();
 
     private Boolean deleted = false;
 
-    @NotBlank
-    private String summary;
+    private String summary = "";
 
-    private ImgUrl bgImg;
+    @NotNull(message = "bgImg不能为null")
+    private ImgUrl bgImg = new ImgUrl();
 
     public BlogInfoJsonObj() {
     }
 
     public BlogInfoJsonObj(BlogInfo blogInfo) {
+        setWithBlogInfo(blogInfo);
+    }
+
+    public void setWithBlogInfo(BlogInfo blogInfo) {
         this.id = blogInfo.getId();
         this.title = blogInfo.getTitle();
         this.time = blogInfo.getTime();
@@ -45,7 +58,6 @@ public class BlogInfoJsonObj {
         this.lastModified = blogInfo.getLast_modified();
         this.deleted = blogInfo.getDeleted();
         this.summary = blogInfo.getSummary();
-        this.tags = JSON.parseObject(blogInfo.getTags(), TagJsonObj[].class);
         this.bgImg = JSON.parseObject(blogInfo.getImg_url(),ImgUrl.class);
     }
 
@@ -60,7 +72,6 @@ public class BlogInfoJsonObj {
         blogInfo.setLast_modified(this.lastModified);
         blogInfo.setDeleted(this.deleted);
         blogInfo.setSummary(this.summary);
-        blogInfo.setTags(JSON.toJSONBytes(this.tags));
         blogInfo.setImg_url(JSON.toJSONBytes(this.bgImg));
         return blogInfo;
     }

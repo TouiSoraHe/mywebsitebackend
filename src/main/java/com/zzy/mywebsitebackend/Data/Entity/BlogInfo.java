@@ -23,8 +23,6 @@ public class BlogInfo {
 
     private byte[] img_url;
 
-    private byte[] tags;
-
     public Integer getId() {
         return id;
     }
@@ -103,13 +101,5 @@ public class BlogInfo {
 
     public void setImg_url(byte[] img_url) {
         this.img_url = img_url;
-    }
-
-    public byte[] getTags() {
-        return tags;
-    }
-
-    public void setTags(byte[] tags) {
-        this.tags = tags;
     }
 }

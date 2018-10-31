@@ -15,6 +15,23 @@ import java.io.*;
 @Slf4j
 public class Util {
 
+    /**
+     * 统计文本中的字符数,排除所有空格
+     * @param text
+     * @return
+     */
+    public static int WordCountExcludeBlank(String text){
+        if(StringUtils.isEmpty(text)){
+            return 0;
+        }
+        return text.replaceAll(" ","").length();
+    }
+
+    /**
+     * markdown文档转为纯文本
+     * @param markdown 需要转换的markdown文档
+     * @return
+     */
     public static  String Markdown2PlainText(String markdown){
         return Markdown2PlainTextUtil.Markdown2PlainText(markdown);
     }

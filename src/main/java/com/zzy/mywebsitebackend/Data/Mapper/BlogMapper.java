@@ -1,10 +1,11 @@
 package com.zzy.mywebsitebackend.Data.Mapper;
 
 import com.zzy.mywebsitebackend.Data.Entity.Blog;
+import java.util.List;
+
+import com.zzy.mywebsitebackend.Data.Provider.BlogProvider;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.type.JdbcType;
-
-import java.util.List;
 
 public interface BlogMapper {
     @Delete({
@@ -14,69 +15,42 @@ public interface BlogMapper {
     int deleteByPrimaryKey(Integer id);
 
     @Insert({
-        "insert into blog (title, time, ",
-        "views, words, last_modified, ",
-        "deleted, content, ",
-        "img_url, tags)",
-        "values (#{title,jdbcType=VARCHAR}, #{time,jdbcType=TIMESTAMP}, ",
-        "#{views,jdbcType=INTEGER}, #{words,jdbcType=INTEGER}, #{last_modified,jdbcType=TIMESTAMP}, ",
-        "#{deleted,jdbcType=BIT}, #{content,jdbcType=LONGVARCHAR}, ",
-        "#{img_url,jdbcType=LONGVARBINARY}, #{tags,jdbcType=LONGVARBINARY})"
+        "insert into blog (content)",
+        "values (#{content,jdbcType=LONGVARCHAR})"
     })
     @Options(useGeneratedKeys=true,keyProperty="id")
     int insert(Blog record);
 
     @Select({
         "select",
-        "id, title, time, views, words, last_modified, deleted, content, img_url, tags",
+        "id, content",
         "from blog",
         "where id = #{id,jdbcType=INTEGER}"
     })
     @Results({
         @Result(column="id", property="id", jdbcType=JdbcType.INTEGER, id=true),
-        @Result(column="title", property="title", jdbcType=JdbcType.VARCHAR),
-        @Result(column="time", property="time", jdbcType=JdbcType.TIMESTAMP),
-        @Result(column="views", property="views", jdbcType=JdbcType.INTEGER),
-        @Result(column="words", property="words", jdbcType=JdbcType.INTEGER),
-        @Result(column="last_modified", property="last_modified", jdbcType=JdbcType.TIMESTAMP),
-        @Result(column="deleted", property="deleted", jdbcType=JdbcType.BIT),
-        @Result(column="content", property="content", jdbcType=JdbcType.LONGVARCHAR),
-        @Result(column="img_url", property="img_url", jdbcType=JdbcType.LONGVARBINARY),
-        @Result(column="tags", property="tags", jdbcType=JdbcType.LONGVARBINARY)
+        @Result(column="content", property="content", jdbcType=JdbcType.LONGVARCHAR)
     })
     Blog selectByPrimaryKey(Integer id);
 
     @Select({
         "select",
-        "id, title, time, views, words, last_modified, deleted, content, img_url, tags",
+        "id, content",
         "from blog"
     })
     @Results({
         @Result(column="id", property="id", jdbcType=JdbcType.INTEGER, id=true),
-        @Result(column="title", property="title", jdbcType=JdbcType.VARCHAR),
-        @Result(column="time", property="time", jdbcType=JdbcType.TIMESTAMP),
-        @Result(column="views", property="views", jdbcType=JdbcType.INTEGER),
-        @Result(column="words", property="words", jdbcType=JdbcType.INTEGER),
-        @Result(column="last_modified", property="last_modified", jdbcType=JdbcType.TIMESTAMP),
-        @Result(column="deleted", property="deleted", jdbcType=JdbcType.BIT),
-        @Result(column="content", property="content", jdbcType=JdbcType.LONGVARCHAR),
-        @Result(column="img_url", property="img_url", jdbcType=JdbcType.LONGVARBINARY),
-        @Result(column="tags", property="tags", jdbcType=JdbcType.LONGVARBINARY)
+        @Result(column="content", property="content", jdbcType=JdbcType.LONGVARCHAR)
     })
     List<Blog> selectAll();
 
     @Update({
         "update blog",
-        "set title = #{title,jdbcType=VARCHAR},",
-          "time = #{time,jdbcType=TIMESTAMP},",
-          "views = #{views,jdbcType=INTEGER},",
-          "words = #{words,jdbcType=INTEGER},",
-          "last_modified = #{last_modified,jdbcType=TIMESTAMP},",
-          "deleted = #{deleted,jdbcType=BIT},",
-          "content = #{content,jdbcType=LONGVARCHAR},",
-          "img_url = #{img_url,jdbcType=LONGVARBINARY},",
-          "tags = #{tags,jdbcType=LONGVARBINARY}",
+        "set content = #{content,jdbcType=LONGVARCHAR}",
         "where id = #{id,jdbcType=INTEGER}"
     })
     int updateByPrimaryKey(Blog record);
+
+    //////////////////////////////////////////////////////////////////////////////////////
+
 }

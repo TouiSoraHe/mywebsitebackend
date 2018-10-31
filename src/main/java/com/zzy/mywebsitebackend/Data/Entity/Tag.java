@@ -7,8 +7,6 @@ public class Tag {
 
     private byte[] img_url;
 
-    private byte[] blog_info_id;
-
     public Integer getId() {
         return id;
     }
@@ -31,13 +29,5 @@ public class Tag {
 
     public void setImg_url(byte[] img_url) {
         this.img_url = img_url;
-    }
-
-    public byte[] getBlog_info_id() {
-        return blog_info_id;
-    }
-
-    public void setBlog_info_id(byte[] blog_info_id) {
-        this.blog_info_id = blog_info_id;
     }
 }

@@ -85,6 +85,12 @@
 			<artifactId>flexmark-all</artifactId>
 			<version>0.34.52</version>
 		</dependency>
+
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>27.0-jre</version>
+		</dependency>
 	</dependencies>
 
 	<build>

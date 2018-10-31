@@ -1,11 +1,11 @@
 package com.zzy.mywebsitebackend.Data.POJO;
 
 public class ImgUrl {
-    private String small;
+    private String small = "";
 
-    private String medium;
+    private String medium = "";
 
-    private String large;
+    private String large = "";
 
     public String getSmall() {
         return small;

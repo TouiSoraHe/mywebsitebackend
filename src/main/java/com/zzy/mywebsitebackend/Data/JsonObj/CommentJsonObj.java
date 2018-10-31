@@ -1,4 +1,4 @@
-package com.zzy.mywebsitebackend.Data.POJO;
+package com.zzy.mywebsitebackend.Data.JsonObj;
 
 import com.zzy.mywebsitebackend.Data.Entity.Comment;
 
