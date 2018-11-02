@@ -20,11 +20,11 @@ public interface CommentMapper {
 
     @Insert({
         "insert into comment (content, parent_id, ",
-        "time, blog_id, ",
+        "blog_id, ",
         "user_id, deleted)",
         "values (#{content,jdbcType=VARCHAR}, #{parent_id,jdbcType=INTEGER}, ",
-        "#{time,jdbcType=TIMESTAMP}, #{blog_id,jdbcType=INTEGER}, ",
-        "#{user_id,jdbcType=INTEGER}, #{deleted,jdbcType=BIT})"
+        "#{blog_id,jdbcType=INTEGER}, ",
+        "#{user_id,jdbcType=VARCHAR}, #{deleted,jdbcType=BIT})"
     })
     @Options(useGeneratedKeys=true,keyProperty="id")
     int insert(Comment record);
@@ -41,7 +41,7 @@ public interface CommentMapper {
         @Result(column="parent_id", property="parent_id", jdbcType=JdbcType.INTEGER),
         @Result(column="time", property="time", jdbcType=JdbcType.TIMESTAMP),
         @Result(column="blog_id", property="blog_id", jdbcType=JdbcType.INTEGER),
-        @Result(column="user_id", property="user_id", jdbcType=JdbcType.INTEGER),
+        @Result(column="user_id", property="user_id", jdbcType=JdbcType.VARCHAR),
         @Result(column="deleted", property="deleted", jdbcType=JdbcType.BIT)
     })
     Comment selectByPrimaryKey(Integer id);
@@ -57,7 +57,7 @@ public interface CommentMapper {
         @Result(column="parent_id", property="parent_id", jdbcType=JdbcType.INTEGER),
         @Result(column="time", property="time", jdbcType=JdbcType.TIMESTAMP),
         @Result(column="blog_id", property="blog_id", jdbcType=JdbcType.INTEGER),
-        @Result(column="user_id", property="user_id", jdbcType=JdbcType.INTEGER),
+        @Result(column="user_id", property="user_id", jdbcType=JdbcType.VARCHAR),
         @Result(column="deleted", property="deleted", jdbcType=JdbcType.BIT)
     })
     List<Comment> selectAll();
@@ -66,9 +66,8 @@ public interface CommentMapper {
         "update comment",
         "set content = #{content,jdbcType=VARCHAR},",
           "parent_id = #{parent_id,jdbcType=INTEGER},",
-          "time = #{time,jdbcType=TIMESTAMP},",
           "blog_id = #{blog_id,jdbcType=INTEGER},",
-          "user_id = #{user_id,jdbcType=INTEGER},",
+          "user_id = #{user_id,jdbcType=VARCHAR},",
           "deleted = #{deleted,jdbcType=BIT}",
         "where id = #{id,jdbcType=INTEGER}"
     })

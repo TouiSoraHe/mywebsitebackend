@@ -2,6 +2,7 @@ package com.zzy.mywebsitebackend.Data.JsonObj;
 
 import com.zzy.mywebsitebackend.Data.Entity.Comment;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
@@ -20,21 +21,25 @@ public class CommentJsonObj {
     @NotNull
     private Integer blogId;
 
+    @Valid
     @NotNull
-    private Integer userId;
+    private UserJsonObj user;
 
     private Boolean deleted = false;
 
     public CommentJsonObj() {
     }
 
-    public CommentJsonObj(Comment comment) {
+    public CommentJsonObj(Comment comment){
+        setWithComment(comment);
+    }
+
+    public void setWithComment(Comment comment) {
         this.id = comment.getId();
         this.content = comment.getContent();
         this.parentId = comment.getParent_id();
         this.time = comment.getTime();
         this.blogId = comment.getBlog_id();
-        this.userId = comment.getUser_id();
         this.deleted = comment.getDeleted();
     }
 
@@ -45,7 +50,7 @@ public class CommentJsonObj {
         comment.setParent_id(this.parentId);
         comment.setTime(this.time);
         comment.setBlog_id(this.blogId);
-        comment.setUser_id(this.userId);
+        comment.setUser_id(this.user.getId());
         comment.setDeleted(this.deleted);
         return comment;
     }
@@ -90,12 +95,12 @@ public class CommentJsonObj {
         this.blogId = blogId;
     }
 
-    public Integer getUserId() {
-        return userId;
+    public UserJsonObj getUser() {
+        return user;
     }
 
-    public void setUserId(Integer userId) {
-        this.userId = userId;
+    public void setUser(UserJsonObj user) {
+        this.user = user;
     }
 
     public Boolean getDeleted() {
@@ -114,7 +119,7 @@ public class CommentJsonObj {
                 ", parentId=" + parentId +
                 ", time=" + time +
                 ", blogId=" + blogId +
-                ", userId=" + userId +
+                ", user=" + user +
                 ", deleted=" + deleted +
                 '}';
     }

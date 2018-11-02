@@ -52,11 +52,7 @@ public class BlogController {
 
     @RequestMapping(value = "/{blogID}",method = RequestMethod.PUT)
     public ResponseEntity updateBlog(@PathVariable("blogID")Integer id,@RequestBody  @Validated BlogJsonObj blogJsonObj){
-        BlogJsonObj oldBlogJsonObj = blogService.selectByPrimaryKey(id);
-        if(oldBlogJsonObj == null){
-            return new ResponseEntity("没有找到ID为"+id+"的博客",HttpStatus.NOT_FOUND);
-        }
-        blogJsonObj.setId(oldBlogJsonObj.getId());
+        blogJsonObj.setId(id);
         int isSuccess = blogService.updateByPrimaryKey(blogJsonObj);
         if(isSuccess == 1)
             return new ResponseEntity(blogJsonObj,HttpStatus.OK);

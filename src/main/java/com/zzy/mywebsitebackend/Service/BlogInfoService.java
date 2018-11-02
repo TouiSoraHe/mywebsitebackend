@@ -32,13 +32,13 @@ public class BlogInfoService {
      * @return
      */
     public int insert(BlogInfoJsonObj blogInfoJsonObj){
-        blogInfoJsonObj.setTime(new Date());
         blogInfoJsonObj.setViews(0);
-        blogInfoJsonObj.setLastModified(new Date());
         blogInfoJsonObj.setDeleted(false);
         BlogInfo blogInfo = blogInfoJsonObj.toBlogInfo();
         int ret = mapper.insert(blogInfo);
-        blogInfoJsonObj.setWithBlogInfo(blogInfo);
+        if(ret == 1){
+            blogInfoJsonObj.setWithBlogInfo(mapper.selectByPrimaryKey(blogInfo.getId()));
+        }
 
         //如果插入的bloginfo中包含了标签信息,则需要将其添加到archive中
         if(blogInfoJsonObj.getTags().length>0){
@@ -60,18 +60,11 @@ public class BlogInfoService {
     }
 
     public int updateByPrimaryKey(BlogInfoJsonObj blogInfoJsonObj){
-        BlogInfoJsonObj oldBlogInfoJsonObj = selectByPrimaryKey(blogInfoJsonObj.getId());
-        if(oldBlogInfoJsonObj == null){
-            throw new RuntimeException("严重错误,BlogInfo获取失败,"+blogInfoJsonObj.toString());
-        }
-        blogInfoJsonObj.setTime(oldBlogInfoJsonObj.getTime());
-        blogInfoJsonObj.setViews(oldBlogInfoJsonObj.getViews());
-        blogInfoJsonObj.setLastModified(new Date());
-        blogInfoJsonObj.setDeleted(oldBlogInfoJsonObj.getDeleted());
-        blogInfoJsonObj.setBlogId(oldBlogInfoJsonObj.getBlogId());
         BlogInfo blogInfo = blogInfoJsonObj.toBlogInfo();
         int ret = mapper.updateByPrimaryKey(blogInfo);
-        blogInfoJsonObj.setWithBlogInfo(blogInfo);
+        if(ret == 1){
+            blogInfoJsonObj.setWithBlogInfo(mapper.selectByPrimaryKey(blogInfo.getId()));
+        }
 
         //判断标签列表,是否有标签的添加或删除
         Set<TagJsonObj> newTagJsonObjs = new HashSet<>(Arrays.asList(blogInfoJsonObj.getTags()));

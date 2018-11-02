@@ -21,7 +21,7 @@ public class BlogInfoJsonObj {
     @NotBlank(message = "title不能为空")
     private String title;
 
-    private Date time = new Date();
+    private Date time;
 
     private Integer views = 0;
 
@@ -32,7 +32,7 @@ public class BlogInfoJsonObj {
 
     private Integer blogId;
 
-    private Date lastModified = new Date();
+    private Date lastModified;
 
     private Boolean deleted = false;
 

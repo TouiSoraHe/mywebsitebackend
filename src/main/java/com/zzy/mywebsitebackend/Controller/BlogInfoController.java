@@ -41,11 +41,7 @@ public class BlogInfoController {
 
     @RequestMapping(value = "/{blogInfoId}",method = RequestMethod.PUT)
     public ResponseEntity updateBlogInfo(@PathVariable("blogInfoId")Integer id, @RequestBody @Validated BlogInfoJsonObj blogInfoJsonObj){
-        BlogInfoJsonObj oldBlogInfoJsonObj = blogInfoService.selectByPrimaryKey(id);
-        if(oldBlogInfoJsonObj == null){
-            return new ResponseEntity("没有找到ID为"+id+"的博客信息",HttpStatus.NOT_FOUND);
-        }
-        blogInfoJsonObj.setId(oldBlogInfoJsonObj.getId());
+        blogInfoJsonObj.setId(id);
         int isSuccess = blogInfoService.updateByPrimaryKey(blogInfoJsonObj);
         if(isSuccess == 1)
             return new ResponseEntity(blogInfoJsonObj,HttpStatus.OK);

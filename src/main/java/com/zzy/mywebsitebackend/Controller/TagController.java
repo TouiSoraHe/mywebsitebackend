@@ -54,11 +54,7 @@ public class TagController {
 
     @RequestMapping(value = "/{tagId}",method = RequestMethod.PUT)
     public ResponseEntity updateTag(@PathVariable("tagId")Integer id,@RequestBody @Validated TagJsonObj tagJsonObj){
-        TagJsonObj oldTagJsonObj = tagService.selectByPrimaryKey(id);
-        if(oldTagJsonObj == null){
-            return new ResponseEntity("没有找到ID为"+id+"的标签信息",HttpStatus.NOT_FOUND);
-        }
-        tagJsonObj.setId(oldTagJsonObj.getId());
+        tagJsonObj.setId(id);
         int isSuccess = tagService.updateByPrimaryKey(tagJsonObj);
         if(isSuccess == 1)
             return new ResponseEntity(tagJsonObj, HttpStatus.OK);

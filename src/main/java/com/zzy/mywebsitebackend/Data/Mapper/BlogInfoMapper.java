@@ -14,13 +14,13 @@ public interface BlogInfoMapper {
     int deleteByPrimaryKey(Integer id);
 
     @Insert({
-        "insert into blog_info (title, time, ",
+        "insert into blog_info (title, ",
         "views, words, blog_id, ",
-        "last_modified, deleted, ",
+        "deleted, ",
         "summary, img_url)",
-        "values (#{title,jdbcType=VARCHAR}, #{time,jdbcType=TIMESTAMP}, ",
+        "values (#{title,jdbcType=VARCHAR}, ",
         "#{views,jdbcType=INTEGER}, #{words,jdbcType=INTEGER}, #{blog_id,jdbcType=INTEGER}, ",
-        "#{last_modified,jdbcType=TIMESTAMP}, #{deleted,jdbcType=BIT}, ",
+        "#{deleted,jdbcType=BIT}, ",
         "#{summary,jdbcType=LONGVARCHAR}, #{img_url,jdbcType=LONGVARBINARY})"
     })
     @Options(useGeneratedKeys=true,keyProperty="id")
@@ -68,11 +68,8 @@ public interface BlogInfoMapper {
     @Update({
         "update blog_info",
         "set title = #{title,jdbcType=VARCHAR},",
-          "time = #{time,jdbcType=TIMESTAMP},",
           "views = #{views,jdbcType=INTEGER},",
           "words = #{words,jdbcType=INTEGER},",
-          "blog_id = #{blog_id,jdbcType=INTEGER},",
-          "last_modified = #{last_modified,jdbcType=TIMESTAMP},",
           "deleted = #{deleted,jdbcType=BIT},",
           "summary = #{summary,jdbcType=LONGVARCHAR},",
           "img_url = #{img_url,jdbcType=LONGVARBINARY}",

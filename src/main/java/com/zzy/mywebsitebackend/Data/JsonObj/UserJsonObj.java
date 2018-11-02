@@ -4,12 +4,16 @@ import com.zzy.mywebsitebackend.Data.Entity.User;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+import java.util.Objects;
 
 public class UserJsonObj {
+
+    @Pattern(regexp = "^([a-fA-F0-9]{32})$")
     private String id;
 
     @NotBlank
-    private String user_name;
+    private String userName;
 
     @Email
     private String email;
@@ -19,9 +23,13 @@ public class UserJsonObj {
     public UserJsonObj() {
     }
 
-    public UserJsonObj(User user) {
+    public UserJsonObj(User user){
+        setWithUser(user);
+    }
+
+    public void setWithUser(User user) {
         this.id = user.getId();
-        this.user_name = user.getUser_name();
+        this.userName = user.getUser_name();
         this.email = user.getEmail();
         this.avatar = user.getAvatar();
     }
@@ -29,6 +37,7 @@ public class UserJsonObj {
     public User toUser() {
         User user = new User();
         user.setId(this.id);
+        user.setUser_name(this.userName);
         user.setEmail(this.email);
         user.setAvatar(this.avatar);
         return user;
@@ -42,12 +51,12 @@ public class UserJsonObj {
         this.id = id == null ? null : id.trim();
     }
 
-    public String getUser_name() {
-        return user_name;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setUser_name(String user_name) {
-        this.user_name = user_name == null ? null : user_name.trim();
+    public void setUserName(String userName) {
+        this.userName = userName == null ? null : userName.trim();
     }
 
     public String getEmail() {
@@ -70,9 +79,26 @@ public class UserJsonObj {
     public String toString() {
         return "UserJsonObj{" +
                 "id='" + id + '\'' +
-                ", user_name='" + user_name + '\'' +
+                ", user_name='" + userName + '\'' +
                 ", email='" + email + '\'' +
                 ", avatar='" + avatar + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserJsonObj that = (UserJsonObj) o;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(userName, that.userName) &&
+                Objects.equals(email, that.email) &&
+                Objects.equals(avatar, that.avatar);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id, userName, email, avatar);
     }
 }
