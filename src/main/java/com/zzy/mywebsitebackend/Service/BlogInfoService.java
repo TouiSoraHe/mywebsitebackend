@@ -84,7 +84,7 @@ public class BlogInfoService {
             log.warn("BlogService.updateByPrimaryKey:插入ArchiveJsonObj数据不一致,成功数:"+addSuccessCount+",总数:"+needAddArchiveJsonObjs.size());
         }
         //将需要删除的归档信息从数据库删除
-        List<Integer> needDeleteTagIds = new ArrayList<>();
+        Set<Integer> needDeleteTagIds = new HashSet<>();
         for (TagJsonObj tagJsonObj:needDeleteTagJsonObjs){
             needDeleteTagIds.add(tagJsonObj.getId());
         }

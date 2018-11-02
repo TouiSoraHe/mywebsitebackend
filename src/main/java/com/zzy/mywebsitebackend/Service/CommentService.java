@@ -25,7 +25,9 @@ public class CommentService {
     public int insert(CommentJsonObj commentJsonObj){
         Comment comment = commentJsonObj.toComment();
         int ret = mapper.insert(comment);
-        commentJsonObj.setWithComment(comment);
+        if(ret == 1){
+            commentJsonObj.setWithComment(mapper.selectByPrimaryKey(comment.getId()));
+        }
 
         //将评论中的用户信息insert或update到User表
         UserJsonObj userJsonObj = commentJsonObj.getUser();
@@ -47,7 +49,9 @@ public class CommentService {
     public int updateByPrimaryKey(CommentJsonObj commentJsonObj){
         Comment comment = commentJsonObj.toComment();
         int ret = mapper.updateByPrimaryKey(comment);
-        commentJsonObj.setWithComment(comment);
+        if(ret == 1){
+            commentJsonObj.setWithComment(mapper.selectByPrimaryKey(comment.getId()));
+        }
 
         //将评论中的用户信息insert或update到User表
         UserJsonObj userJsonObj = commentJsonObj.getUser();
@@ -84,7 +88,7 @@ public class CommentService {
     public List<CommentJsonObj> selectAll(){
         List<Comment> comments = mapper.selectAll();
         if(comments.size() == 0 ) return new ArrayList<>();
-        List<String> userIds = new ArrayList<>();
+        Set<String> userIds = new HashSet<>();
         for (Comment comment:comments){
             userIds.add(comment.getUser_id());
         }

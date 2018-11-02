@@ -1,11 +1,11 @@
 package com.zzy.mywebsitebackend.Data.Mapper;
 
 import com.zzy.mywebsitebackend.Data.Entity.User;
-import java.util.List;
-
-import com.zzy.mywebsitebackend.Data.Provider.UserProvider;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.type.JdbcType;
+
+import java.util.List;
+import java.util.Set;
 
 public interface UserMapper {
     @Delete({
@@ -60,12 +60,17 @@ public interface UserMapper {
 
     ////////////////////////////////////////////////////////////////////////////////////
 
-    @SelectProvider(type = UserProvider.class, method = "selectByPrimaryKeyList")
+    @Select({
+            "select",
+            "id, user_name, email, avatar",
+            "from user",
+            "where id in (#{ids})"
+    })
     @Results({
             @Result(column="id", property="id", jdbcType=JdbcType.VARCHAR, id=true),
             @Result(column="user_name", property="user_name", jdbcType=JdbcType.VARCHAR),
             @Result(column="email", property="email", jdbcType=JdbcType.VARCHAR),
             @Result(column="avatar", property="avatar", jdbcType=JdbcType.VARCHAR)
     })
-    List<User> selectByPrimaryKeyList(@Param("ids") List<String> ids);
+    List<User> selectByPrimaryKeyList(@Param("ids") Set<String> ids);
 }

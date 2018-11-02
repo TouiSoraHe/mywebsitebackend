@@ -3,6 +3,7 @@ package com.zzy.mywebsitebackend.Data.Mapper;
 import com.zzy.mywebsitebackend.Data.Entity.Archive;
 
 import java.util.List;
+import java.util.Set;
 
 import com.zzy.mywebsitebackend.Data.Provider.ArchiveProvider;
 import org.apache.ibatis.annotations.*;
@@ -69,11 +70,17 @@ public interface ArchiveMapper {
     })
     int deleteByTagID(Integer id);
 
-    @DeleteProvider(type = ArchiveProvider.class, method = "deleteByTagIDAndBlogInfoIDs")
-    int deleteByTagIDAndBlogInfoIDs(@Param("tagId") Integer tagId, @Param("blogInfoIds") List<Integer> blogInfoIds);
+    @Delete({
+            "delete from archive",
+            "where tag_id = #{tagId,jdbcType=INTEGER} AND blog_info_id in (#{blogInfoIds})"
+    })
+    int deleteByTagIDAndBlogInfoIDs(@Param("tagId") Integer tagId, @Param("blogInfoIds") Set<Integer> blogInfoIds);
 
-    @DeleteProvider(type = ArchiveProvider.class, method = "deleteByBlogInfoIDAndTagIDs")
-    int deleteByBlogInfoIDAndTagIDs(@Param("blogInfoId") Integer blogInfoId, @Param("tagIds") List<Integer> tagIds);
+    @Delete({
+            "delete from archive",
+            "where blog_info_id = #{blogInfoId,jdbcType=INTEGER} AND tag_id in (#{tagIds})"
+    })
+    int deleteByBlogInfoIDAndTagIDs(@Param("blogInfoId") Integer blogInfoId, @Param("tagIds") Set<Integer> tagIds);
 
     @Select({
             "select",
@@ -101,13 +108,18 @@ public interface ArchiveMapper {
     })
     List<Archive> selectByTagID(@Param("tagId") Integer tagId);
 
-    @SelectProvider(type = ArchiveProvider.class, method = "selectByTagIDs")
+    @Select({
+            "select",
+            "id, blog_info_id, tag_id",
+            "from archive",
+            "where tag_id in (#{tagIds})"
+    })
     @Results({
             @Result(column = "id", property = "id", jdbcType = JdbcType.INTEGER, id = true),
             @Result(column = "blog_info_id", property = "blog_info_id", jdbcType = JdbcType.INTEGER),
             @Result(column = "tag_id", property = "tag_id", jdbcType = JdbcType.INTEGER)
     })
-    List<Archive> selectByTagIDs(@Param("tagIds") List<Integer> tagIds);
+    List<Archive> selectByTagIDs(@Param("tagIds") Set<Integer> tagIds);
 
     @InsertProvider(type = ArchiveProvider.class, method = "insterByList")
     @Options(useGeneratedKeys = true, keyProperty = "id")

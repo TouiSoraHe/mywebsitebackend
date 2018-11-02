@@ -22,42 +22,4 @@ public class ArchiveProvider {
         sql += Joiner.on(",").join(values);
         return sql;
     }
-
-    public  String selectByTagIDs(Map map){
-        List<Integer> tagIds = (List<Integer>)map.get("tagIds");
-        String tagIdsStr = Joiner.on(",").join(tagIds);
-        return new SQL()
-        {
-            {
-                SELECT("id, blog_info_id, tag_id");
-                FROM("archive");
-                WHERE("tag_id in ("+(Strings.isNullOrEmpty(tagIdsStr)?null:tagIdsStr)+")");
-            }
-        }.toString();
-    }
-
-    public String deleteByBlogInfoIDAndTagIDs(Map map){
-        List<Integer> tagIds = (List<Integer>)map.get("tagIds");
-        final String tagIdsStr = Joiner.on(',').join(tagIds);
-        return new SQL()
-        {
-            {
-                DELETE_FROM("archive");
-                WHERE("blog_info_id = #{blogInfoId,jdbcType=INTEGER} AND tag_id in ("+ (Strings.isNullOrEmpty(tagIdsStr)?"null":tagIdsStr)+")");
-            }
-        }.toString();
-    }
-
-    public String deleteByTagIDAndBlogInfoIDs(Map map){
-        List<Integer> blogInfoIds = (List<Integer>)map.get("blogInfoIds");
-        final String blogInfoIdsStr = Joiner.on(',').join(blogInfoIds);
-        return new SQL()
-        {
-            {
-                DELETE_FROM("archive");
-                WHERE("tag_id = #{tagId,jdbcType=INTEGER} AND blog_info_id in ("+ (Strings.isNullOrEmpty(blogInfoIdsStr)?"null":blogInfoIdsStr)+")");
-            }
-        }.toString();
-    }
-
 }

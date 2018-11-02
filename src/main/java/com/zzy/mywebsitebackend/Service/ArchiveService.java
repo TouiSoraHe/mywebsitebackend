@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class ArchiveService {
@@ -62,11 +63,11 @@ public class ArchiveService {
         return mapper.deleteByTagID(var0);
     }
 
-    public int deleteByTagIDAndBlogInfoIDs(Integer tagId,List<Integer> blogInfoIds){
+    public int deleteByTagIDAndBlogInfoIDs(Integer tagId,Set<Integer> blogInfoIds){
         return mapper.deleteByTagIDAndBlogInfoIDs(tagId,blogInfoIds);
     }
 
-    public int deleteByBlogInfoIDAndTagIDs(Integer blogInfoId,List<Integer> tagIds){
+    public int deleteByBlogInfoIDAndTagIDs(Integer blogInfoId,Set<Integer> tagIds){
         return mapper.deleteByBlogInfoIDAndTagIDs(blogInfoId,tagIds);
     }
 
@@ -94,7 +95,7 @@ public class ArchiveService {
         return archiveJsonObjs;
     }
 
-    public List<ArchiveJsonObj> selectByTagIDs(List<Integer> tagIds){
+    public List<ArchiveJsonObj> selectByTagIDs(Set<Integer> tagIds){
         List<ArchiveJsonObj> archiveJsonObjs = new ArrayList<>();
         List<Archive> archives = mapper.selectByTagIDs(tagIds);
         for(Archive archive:archives){

@@ -50,6 +50,6 @@ public class Test {
 
     @org.junit.Test
     public void dummy() {
-        System.out.println(archiveService.deleteByBlogInfoIDAndTagIDs(15, Lists.newArrayList(3,4)));
+        
     }
 }

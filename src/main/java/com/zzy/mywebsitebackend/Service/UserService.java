@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class UserService {
@@ -16,6 +17,11 @@ public class UserService {
     @Autowired
     private UserMapper mapper;
 
+    /**
+     * 添加用户
+     * @param userJsonObj
+     * @return
+     */
     public int insert(UserJsonObj userJsonObj){
         User user = userJsonObj.toUser();
         int ret = mapper.insert(user);
@@ -23,6 +29,11 @@ public class UserService {
         return ret;
     }
 
+    /**
+     * 更新用户
+     * @param userJsonObj
+     * @return
+     */
     public int updateByPrimaryKey(UserJsonObj userJsonObj){
         User user = userJsonObj.toUser();
         int ret = mapper.updateByPrimaryKey(user);
@@ -30,13 +41,23 @@ public class UserService {
         return ret;
     }
 
-    public UserJsonObj selectByPrimaryKey(String var0){
-        User user = mapper.selectByPrimaryKey(var0);
+    /**
+     * 根据id获取用户
+     * @param id
+     * @return
+     */
+    public UserJsonObj selectByPrimaryKey(String id){
+        User user = mapper.selectByPrimaryKey(id);
         if(user == null) return null;
         return new UserJsonObj(user);
     }
 
-    public List<UserJsonObj> selectByPrimaryKeyList(List<String> ids){
+    /**
+     * 根据id列表批量获取用户
+     * @param ids
+     * @return
+     */
+    public List<UserJsonObj> selectByPrimaryKeyList(Set<String> ids){
         List<User> users = mapper.selectByPrimaryKeyList(ids);
         if(users.size() == 0 ) return new ArrayList<>();
         List<UserJsonObj> userJsonObjs = new ArrayList<>();
@@ -46,10 +67,19 @@ public class UserService {
         return  userJsonObjs;
     }
 
-    public int deleteByPrimaryKey(String var0){
-        return mapper.deleteByPrimaryKey(var0);
+    /**
+     * 根据id删除用户
+     * @param id
+     * @return
+     */
+    public int deleteByPrimaryKey(String id){
+        return mapper.deleteByPrimaryKey(id);
     }
 
+    /**
+     * 获取所有用户
+     * @return
+     */
     public List selectAll(){
         return mapper.selectAll();
     }

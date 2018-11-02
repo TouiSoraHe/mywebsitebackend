@@ -1,11 +1,11 @@
 package com.zzy.mywebsitebackend.Data.Mapper;
 
 import com.zzy.mywebsitebackend.Data.Entity.Tag;
-import java.util.List;
-
-import com.zzy.mywebsitebackend.Data.Provider.TagProvider;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.type.JdbcType;
+
+import java.util.List;
+import java.util.Set;
 
 public interface TagMapper {
     @Delete({
@@ -56,11 +56,16 @@ public interface TagMapper {
 
     //////////////////////////////////////////////////////////////////////////////
 
-    @SelectProvider(type = TagProvider.class, method = "selectByPrimaryKeyList")
+    @Select({
+            "select",
+            "id, tag_name, img_url",
+            "from tag",
+            "where id in (#{ids})"
+    })
     @Results({
             @Result(column="id", property="id", jdbcType=JdbcType.INTEGER, id=true),
             @Result(column="tag_name", property="tag_name", jdbcType=JdbcType.VARCHAR),
             @Result(column="img_url", property="img_url", jdbcType=JdbcType.LONGVARBINARY)
     })
-    List<Tag> selectByPrimaryKeyList(@Param("ids") List<Integer> ids);
+    List<Tag> selectByPrimaryKeyList(@Param("ids") Set<Integer> ids);
 }

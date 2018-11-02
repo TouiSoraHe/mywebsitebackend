@@ -21,6 +21,11 @@ public class TagService {
     @Autowired
     ArchiveService archiveService;
 
+    /**
+     * 添加标签,该方法会同步更新archive表
+     * @param tagJsonObj
+     * @return
+     */
     public int insert(TagJsonObj tagJsonObj) {
         Tag tag = tagJsonObj.toTag();
         int ret = mapper.insert(tag);
@@ -43,6 +48,11 @@ public class TagService {
         return ret;
     }
 
+    /**
+     * 更新标签,该方法会同步更新archive表
+     * @param tagJsonObj
+     * @return
+     */
     public int updateByPrimaryKey(TagJsonObj tagJsonObj) {
         Tag tag = tagJsonObj.toTag();
         int ret = mapper.updateByPrimaryKey(tag);
@@ -65,7 +75,7 @@ public class TagService {
             log.warn("TagService.updateByPrimaryKey:插入ArchiveJsonObj数据不一致,成功数:"+addSuccessCount+",总数:"+needAddArchiveJsonObjs.size());
         }
         //将需要删除的归档信息从数据库删除
-        int deleteSuccessCount = archiveService.deleteByTagIDAndBlogInfoIDs(tagJsonObj.getId(),new ArrayList<>(needDeleteBlogInfoIds));
+        int deleteSuccessCount = archiveService.deleteByTagIDAndBlogInfoIDs(tagJsonObj.getId(),new HashSet<>(needDeleteBlogInfoIds));
         if(deleteSuccessCount != needDeleteBlogInfoIds.size()){
             log.warn("TagService.updateByPrimaryKey:删除ArchiveJsonObj数据不一致,成功数:"+deleteSuccessCount+",总数:"+needDeleteBlogInfoIds.size());
         }
@@ -74,15 +84,25 @@ public class TagService {
         return ret;
     }
 
-    public TagJsonObj selectByPrimaryKey(Integer var0) {
-        Tag tag = mapper.selectByPrimaryKey(var0);
+    /**
+     * 根据id获取标签
+     * @param id
+     * @return
+     */
+    public TagJsonObj selectByPrimaryKey(Integer id) {
+        Tag tag = mapper.selectByPrimaryKey(id);
         if (tag == null) return null;
         TagJsonObj tagJsonObj = TagJsonObj.CreateWithTag(tag);
         tagJsonObj.setBlogInfoId(getBlogInfoIdsByTagId(tagJsonObj.getId()));
         return tagJsonObj;
     }
 
-    public List<TagJsonObj> selectByPrimaryKeyList(List<Integer> ids) {
+    /**
+     * 根据标签id列表获取标签
+     * @param ids
+     * @return
+     */
+    public List<TagJsonObj> selectByPrimaryKeyList(Set<Integer> ids) {
         List<TagJsonObj> tagJsonObjs = new ArrayList<>();
         List<Tag> tags = mapper.selectByPrimaryKeyList(ids);
         if (tags.size() == 0) return new ArrayList<>();
@@ -97,26 +117,40 @@ public class TagService {
         return tagJsonObjs;
     }
 
+    /**
+     * 根据blogInfoId获取标签
+     * @param blogInfoId
+     * @return
+     */
     public List<TagJsonObj> selectByBlogInfoId(Integer blogInfoId) {
         List<ArchiveJsonObj> archiveJsonObjs = archiveService.selectByBlogInfoID(blogInfoId);
         if (archiveJsonObjs.size() == 0) return new ArrayList<>();
-        List<Integer> tagIds = new ArrayList<>();
+        Set<Integer> tagIds = new HashSet<>();
         for (ArchiveJsonObj archiveJsonObj : archiveJsonObjs) {
             tagIds.add(archiveJsonObj.getTag_id());
         }
         return selectByPrimaryKeyList(tagIds);
     }
 
+    /**
+     * 根据标签id删除标签
+     * @param tagId
+     * @return
+     */
     public int deleteByPrimaryKey(Integer tagId) {
         archiveService.deleteByTagID(tagId);
         return mapper.deleteByPrimaryKey(tagId);
     }
 
+    /**
+     * 获取所有标签
+     * @return
+     */
     public List<TagJsonObj> selectAll() {
         List<TagJsonObj> tagJsonObjs = new ArrayList<>();
         List<Tag> tags = mapper.selectAll();
         if(tags.size() == 0 ) return new ArrayList<>();
-        List<Integer> tagIds = new ArrayList<>();
+        Set<Integer> tagIds = new HashSet<>();
         for (Tag tag:tags){
             tagIds.add(tag.getId());
         }
@@ -131,6 +165,11 @@ public class TagService {
         return tagJsonObjs;
     }
 
+    /**
+     * 获取指定id标签所包含的bloginfoid
+     * @param tagId
+     * @return
+     */
     private Integer[] getBlogInfoIdsByTagId(Integer tagId) {
         List<ArchiveJsonObj> archiveJsonObjs = archiveService.selectByTagID(tagId);
         Integer[] blogInfoIds = new Integer[archiveJsonObjs.size()];
@@ -140,7 +179,7 @@ public class TagService {
         return blogInfoIds;
     }
 
-    private Map<Integer,Integer[]> getBlogInfoIdsByTagIds(List<Integer> tagIds) {
+    private Map<Integer,Integer[]> getBlogInfoIdsByTagIds(Set<Integer> tagIds) {
         List<ArchiveJsonObj> archiveJsonObjs = archiveService.selectByTagIDs(tagIds);
         Map<Integer,List<Integer>> tagId2BlogInfoIdsMap = new HashMap<>();
         for (ArchiveJsonObj archiveJsonObj:archiveJsonObjs){
