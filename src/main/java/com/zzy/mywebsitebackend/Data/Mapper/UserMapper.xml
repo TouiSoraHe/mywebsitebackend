@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzy.mywebsitebackend.Data.Mapper.UserMapper">
+
+  <resultMap id="BaseResultMap" type="com.zzy.mywebsitebackend.Data.Entity.User">
+    <id column="user_id" jdbcType="VARCHAR" property="id" />
+    <result column="user_user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="user_avatar_img_id" jdbcType="INTEGER" property="avatarImgId" />
+    <result column="user_email" jdbcType="VARCHAR" property="email" />
+    <association property="avatar" javaType="com.zzy.mywebsitebackend.Data.Entity.Img"
+                 resultMap="com.zzy.mywebsitebackend.Data.Mapper.ImgMapper.BaseResultMap"/>
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    user.id as user_id, user.user_name as user_user_name, user.avatar_img_id as user_avatar_img_id, 
+    user.email as user_email
+    ,<include refid="com.zzy.mywebsitebackend.Data.Mapper.ImgMapper.Base_Column_List" />
+  </sql>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from user user
+    left join img on user.avatar_img_id=img.id
+    where user.id = #{id,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectAll" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from user user
+    left join img on user.avatar_img_id=img.id
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from user
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+
+  <insert id="insert" parameterType="com.zzy.mywebsitebackend.Data.Entity.User">
+    insert into user (id, user_name, avatar_img_id, 
+      email)
+    values (#{id,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, #{avatarImgId,jdbcType=INTEGER}, 
+      #{email,jdbcType=VARCHAR})
+  </insert>
+
+  <!--<insert id="insertSelective" parameterType="com.zzy.mywebsitebackend.Data.Entity.User">-->
+    <!--insert into user-->
+    <!--<trim prefix="(" suffix=")" suffixOverrides=",">-->
+      <!--<if test="id != null">-->
+        <!--id,-->
+      <!--</if>-->
+      <!--<if test="userName != null">-->
+        <!--user_name,-->
+      <!--</if>-->
+      <!--<if test="avatarImgId != null">-->
+        <!--avatar_img_id,-->
+      <!--</if>-->
+      <!--<if test="email != null">-->
+        <!--email,-->
+      <!--</if>-->
+    <!--</trim>-->
+    <!--<trim prefix="values (" suffix=")" suffixOverrides=",">-->
+      <!--<if test="id != null">-->
+        <!--#{id,jdbcType=VARCHAR},-->
+      <!--</if>-->
+      <!--<if test="userName != null">-->
+        <!--#{userName,jdbcType=VARCHAR},-->
+      <!--</if>-->
+      <!--<if test="avatarImgId != null">-->
+        <!--#{avatarImgId,jdbcType=INTEGER},-->
+      <!--</if>-->
+      <!--<if test="email != null">-->
+        <!--#{email,jdbcType=VARCHAR},-->
+      <!--</if>-->
+    <!--</trim>-->
+  <!--</insert>-->
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.zzy.mywebsitebackend.Data.Entity.User">
+    update user
+    <set>
+      <if test="userName != null">
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="avatarImgId != null">
+        avatar_img_id = #{avatarImgId,jdbcType=INTEGER},
+      </if>
+      <if test="email != null">
+        email = #{email,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+  <!--<update id="updateByPrimaryKey" parameterType="com.zzy.mywebsitebackend.Data.Entity.User">-->
+    <!--update user-->
+    <!--set user_name = #{userName,jdbcType=VARCHAR},-->
+      <!--avatar_img_id = #{avatarImgId,jdbcType=INTEGER},-->
+      <!--email = #{email,jdbcType=VARCHAR}-->
+    <!--where id = #{id,jdbcType=VARCHAR}-->
+  <!--</update>-->
+</mapper>

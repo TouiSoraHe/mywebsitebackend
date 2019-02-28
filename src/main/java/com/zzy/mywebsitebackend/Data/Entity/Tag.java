@@ -1,11 +1,31 @@
 package com.zzy.mywebsitebackend.Data.Entity;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
 public class Tag {
     private Integer id;
 
-    private String tag_name;
+    @NotBlank(message = "标签名不能为空")
+    private String tagName;
 
-    private byte[] img_url;
+    private Integer imgId;
+
+    @NotNull(message = "blogInfoIDs不能为null")
+    private List<Integer> blogInfoIDs = new ArrayList<>();
+
+    @NotNull(message = "tagImg不能为null")
+    private Img tagImg = new Img();
+
+    public Tag() {
+    }
+
+    public Tag(String tagName) {
+        this.tagName = tagName;
+    }
 
     public Integer getId() {
         return id;
@@ -15,19 +35,63 @@ public class Tag {
         this.id = id;
     }
 
-    public String getTag_name() {
-        return tag_name;
+    public String getTagName() {
+        return tagName;
     }
 
-    public void setTag_name(String tag_name) {
-        this.tag_name = tag_name == null ? null : tag_name.trim();
+    public void setTagName(String tagName) {
+        this.tagName = tagName == null ? null : tagName.trim();
     }
 
-    public byte[] getImg_url() {
-        return img_url;
+    public Integer getImgId() {
+        return imgId;
     }
 
-    public void setImg_url(byte[] img_url) {
-        this.img_url = img_url;
+    public void setImgId(Integer imgId) {
+        this.imgId = imgId;
+    }
+
+    public Img getTagImg() {
+        return tagImg;
+    }
+
+    public void setTagImg(Img tagImg) {
+        this.tagImg = tagImg;
+    }
+
+    public List<Integer> getBlogInfoIDs() {
+        return blogInfoIDs;
+    }
+
+    public void setBlogInfoIDs(List<Integer> blogInfoIDs) {
+        this.blogInfoIDs = blogInfoIDs;
+    }
+
+    @Override
+    public String toString() {
+        return "Tag{" +
+                "id=" + id +
+                ", tagName='" + tagName + '\'' +
+                ", imgId=" + imgId +
+                ", blogInfoIDs=" + blogInfoIDs +
+                ", tagImg=" + tagImg +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Tag tag = (Tag) o;
+        return Objects.equals(id, tag.id) &&
+                Objects.equals(tagName, tag.tagName) &&
+                Objects.equals(imgId, tag.imgId) &&
+                Objects.equals(blogInfoIDs, tag.blogInfoIDs) &&
+                Objects.equals(tagImg, tag.tagImg);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, tagName, imgId, blogInfoIDs, tagImg);
     }
 }

@@ -1,110 +1,97 @@
 
 package com.zzy.mywebsitebackend.Service;
 
+import com.google.common.base.Strings;
 import com.zzy.mywebsitebackend.Data.Entity.Comment;
 import com.zzy.mywebsitebackend.Data.Entity.User;
-import com.zzy.mywebsitebackend.Data.JsonObj.CommentJsonObj;
-import com.zzy.mywebsitebackend.Data.JsonObj.UserJsonObj;
 import com.zzy.mywebsitebackend.Data.Mapper.CommentMapper;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Date;
+import java.util.List;
 
 @Service
-@Slf4j
 public class CommentService {
 
     @Autowired
     private CommentMapper mapper;
 
     @Autowired
-    UserService userService;
+    private UserService userService;
 
-    public int insert(CommentJsonObj commentJsonObj){
-        Comment comment = commentJsonObj.toComment();
-        int ret = mapper.insert(comment);
-        if(ret == 1){
-            commentJsonObj.setWithComment(mapper.selectByPrimaryKey(comment.getId()));
+    public int insert(Comment comment){
+        comment.setTime(new Date());
+        comment.setUserId(comment.getUser().getId());
+        if(comment.getDeleted() == null){
+            comment.setDeleted(false);
         }
-
-        //将评论中的用户信息insert或update到User表
-        UserJsonObj userJsonObj = commentJsonObj.getUser();
-        System.out.println(userJsonObj);
-        UserJsonObj oldUserJsonObj = userService.selectByPrimaryKey(userJsonObj.getId());
-        if(oldUserJsonObj == null){
-            if(userService.insert(userJsonObj) == 0){
-                log.error("严重错误,添加User失败!"+commentJsonObj.toString()+","+userJsonObj.toString());
-            }
-        }else if(!userJsonObj.equals(oldUserJsonObj)){
-            if(userService.updateByPrimaryKey(userJsonObj) == 0){
-                log.error("严重错误,更新User失败!"+commentJsonObj.toString()+","+userJsonObj.toString());
-            }
-        }
-        commentJsonObj.setUser(userJsonObj);
-        return ret;
+        userService.insert(comment.getUser());
+        return mapper.insert(comment);
     }
 
-    public int updateByPrimaryKey(CommentJsonObj commentJsonObj){
-        Comment comment = commentJsonObj.toComment();
-        int ret = mapper.updateByPrimaryKey(comment);
-        if(ret == 1){
-            commentJsonObj.setWithComment(mapper.selectByPrimaryKey(comment.getId()));
-        }
-
-        //将评论中的用户信息insert或update到User表
-        UserJsonObj userJsonObj = commentJsonObj.getUser();
-        UserJsonObj oldUserJsonObj = userService.selectByPrimaryKey(userJsonObj.getId());
-        if(oldUserJsonObj == null){
-            if(userService.insert(userJsonObj) == 0){
-                log.error("严重错误,添加User失败!"+commentJsonObj.toString()+","+userJsonObj.toString());
-            }
-        }else if(!oldUserJsonObj.equals(userJsonObj)){
-            if(userService.updateByPrimaryKey(userJsonObj) == 0){
-                log.error("严重错误,更新User失败!"+commentJsonObj.toString()+","+userJsonObj.toString());
-            }
-        }
-        commentJsonObj.setUser(userJsonObj);
-        return ret;
+    public Comment selectByPrimaryKey(Integer var0){
+        return mapper.selectByPrimaryKey(var0);
     }
 
-    public CommentJsonObj selectByPrimaryKey(Integer commentId){
-        Comment comment = mapper.selectByPrimaryKey(commentId);
-        if(comment == null) return null;
-        CommentJsonObj commentJsonObj = new CommentJsonObj(comment);
-        UserJsonObj userJsonObj = userService.selectByPrimaryKey(comment.getUser_id());
-        if(userJsonObj == null){
-            log.error("严重错误,获取User失败!"+commentJsonObj.toString()+",UserID"+comment.getUser_id());
-        }
-        commentJsonObj.setUser(userJsonObj);
-        return commentJsonObj;
+    public int deleteByPrimaryKey(Integer var0){
+        return mapper.deleteByPrimaryKey(var0);
     }
 
-    public int deleteByPrimaryKey(Integer commentId){
-        return mapper.deleteByPrimaryKey(commentId);
+//    public int updateByPrimaryKey(Comment var0){
+//        return mapper.updateByPrimaryKey(var0);
+//    }
+
+    public int updateByPrimaryKeySelective(Comment comment){
+        comment.setTime(null);
+        comment.setUserId(null);
+        comment.setTime(null);
+        comment.setBlogId(null);
+        comment.setParentId(null);
+        User user = comment.getUser();
+        user.setId(selectByPrimaryKey(comment.getId()).getUser().getId());
+        userService.updateByPrimaryKeySelective(user);
+        return mapper.updateByPrimaryKeySelective(comment);
     }
 
-    public List<CommentJsonObj> selectAll(){
-        List<Comment> comments = mapper.selectAll();
-        if(comments.size() == 0 ) return new ArrayList<>();
-        Set<String> userIds = new HashSet<>();
-        for (Comment comment:comments){
-            userIds.add(comment.getUser_id());
-        }
-        Map<String,UserJsonObj> userID2UserJsonObj = new HashMap<>();
-        for (UserJsonObj userJsonObj:userService.selectByPrimaryKeyList(userIds)){
-            userID2UserJsonObj.put(userJsonObj.getId(),userJsonObj);
-        }
-        List<CommentJsonObj> commentJsonObjs = new ArrayList<>();
-        for (Comment comment:comments){
-            CommentJsonObj commentJsonObj = new CommentJsonObj(comment);
-            if(userID2UserJsonObj.containsKey(comment.getUser_id())){
-                commentJsonObj.setUser(userID2UserJsonObj.get(comment.getUser_id()));
-            }
-            commentJsonObjs.add(commentJsonObj);
-        }
-        return commentJsonObjs;
+    public List<Comment> selectAll() {
+        return mapper.selectAll();
     }
+
+    public List<Comment> selectByBlogIDWithRootNode(Integer blogID, String sort, String order, Integer offset, Integer count) {
+        return mapper.selectByBlogIDWithRootNode(blogID,getSort(sort),getOrder(order),offset,count);
+    }
+
+    private String getSort(String sort){
+        if (Strings.isNullOrEmpty(sort)) {
+            sort = "time";
+        }
+        return sort;
+    }
+
+    private String getOrder(String order){
+        if(Strings.isNullOrEmpty(order)){
+            order = "asc";
+        }
+        else{
+            order = order.toLowerCase();
+        }
+        if (!"desc".equals(order)) {
+            order = "asc";
+        }
+        return order;
+    }
+
+    public int selectByBlogIDRootCount(Integer blogID) {
+        return mapper.selectByBlogIDRootCount(blogID);
+    }
+
+    public List<Comment> selectByParentIDs(List<Integer> parentIds) {
+        return mapper.selectByParentIDs(parentIds);
+    }
+
+//    public int insertSelective(Comment var0){
+//        return mapper.insertSelective(var0);
+//    }
 
 }

@@ -1,71 +1,30 @@
 package com.zzy.mywebsitebackend.Data.Mapper;
 
 import com.zzy.mywebsitebackend.Data.Entity.Tag;
-import org.apache.ibatis.annotations.*;
-import org.apache.ibatis.type.JdbcType;
 
 import java.util.List;
-import java.util.Set;
 
 public interface TagMapper {
-    @Delete({
-        "delete from tag",
-        "where id = #{id,jdbcType=INTEGER}"
-    })
     int deleteByPrimaryKey(Integer id);
 
-    @Insert({
-        "insert into tag (tag_name, img_url)",
-        "values (#{tag_name,jdbcType=VARCHAR}, #{img_url,jdbcType=LONGVARBINARY})"
-    })
-    @Options(useGeneratedKeys=true,keyProperty="id")
     int insert(Tag record);
 
-    @Select({
-        "select",
-        "id, tag_name, img_url",
-        "from tag",
-        "where id = #{id,jdbcType=INTEGER}"
-    })
-    @Results({
-        @Result(column="id", property="id", jdbcType=JdbcType.INTEGER, id=true),
-        @Result(column="tag_name", property="tag_name", jdbcType=JdbcType.VARCHAR),
-        @Result(column="img_url", property="img_url", jdbcType=JdbcType.LONGVARBINARY)
-    })
+//    int insertSelective(Tag record);
+
     Tag selectByPrimaryKey(Integer id);
 
-    @Select({
-        "select",
-        "id, tag_name, img_url",
-        "from tag"
-    })
-    @Results({
-        @Result(column="id", property="id", jdbcType=JdbcType.INTEGER, id=true),
-        @Result(column="tag_name", property="tag_name", jdbcType=JdbcType.VARCHAR),
-        @Result(column="img_url", property="img_url", jdbcType=JdbcType.LONGVARBINARY)
-    })
+    int updateByPrimaryKeySelective(Tag record);
+
+//    int updateByPrimaryKey(Tag record);
+
+    /**
+     * 该方法会忽略重复的tag,但是会导致tag的id错乱
+     * @param tags
+     * @return
+     */
+    int insertAll(List<Tag> tags);
+
+    List<Tag> selectByTagName(List<String> tagName);
+
     List<Tag> selectAll();
-
-    @Update({
-        "update tag",
-        "set tag_name = #{tag_name,jdbcType=VARCHAR},",
-          "img_url = #{img_url,jdbcType=LONGVARBINARY}",
-        "where id = #{id,jdbcType=INTEGER}"
-    })
-    int updateByPrimaryKey(Tag record);
-
-    //////////////////////////////////////////////////////////////////////////////
-
-    @Select({
-            "select",
-            "id, tag_name, img_url",
-            "from tag",
-            "where id in (#{ids})"
-    })
-    @Results({
-            @Result(column="id", property="id", jdbcType=JdbcType.INTEGER, id=true),
-            @Result(column="tag_name", property="tag_name", jdbcType=JdbcType.VARCHAR),
-            @Result(column="img_url", property="img_url", jdbcType=JdbcType.LONGVARBINARY)
-    })
-    List<Tag> selectByPrimaryKeyList(@Param("ids") Set<Integer> ids);
 }

@@ -1,12 +1,13 @@
 package com.zzy.mywebsitebackend.Controller;
 
-import com.zzy.mywebsitebackend.Data.JsonObj.BlogJsonObj;
+import com.zzy.mywebsitebackend.Data.Entity.Blog;
 import com.zzy.mywebsitebackend.Service.BlogService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,44 +25,41 @@ public class BlogController {
     private BlogService blogService;
 
     @RequestMapping(value = "/{blogID}",method = RequestMethod.GET)
+    @Transactional
     public ResponseEntity getBlog(@PathVariable("blogID")Integer blogID) {
-        BlogJsonObj blogJsonObj = blogService.selectByPrimaryKey(blogID);
-        if(blogJsonObj == null){
+        Blog blog = blogService.selectByPrimaryKey(blogID);
+        if(blog == null){
             String msg = "没有找到ID为"+blogID+"的博客";
             log.error("getBlog:"+msg);
             return new ResponseEntity(msg,HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity(blogJsonObj,HttpStatus.OK);
+        return new ResponseEntity(blog,HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.GET)
+    @Transactional
     public ResponseEntity getBlogs() {
-        List<BlogJsonObj> blogJsonObjs = blogService.selectAll();
-        return new ResponseEntity(blogJsonObjs,HttpStatus.OK);
+        List<Blog> blogs = blogService.selectAll();
+        return new ResponseEntity(blogs,HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity addBlog(@RequestBody  @Validated BlogJsonObj blogJsonObj){
-        int isSuccess = blogService.insert(blogJsonObj);
-        if(isSuccess == 1)
-            return  new ResponseEntity(blogJsonObj,HttpStatus.CREATED);
-        String msg = "addBlog:新增博客失败,"+ blogJsonObj.toString();
-        log.error(msg);
-        return  new ResponseEntity(msg,HttpStatus.BAD_REQUEST);
+    @Transactional
+    public ResponseEntity addBlog(@RequestBody  @Validated Blog blog){
+        blogService.insert(blog);
+        return  new ResponseEntity(blog,HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/{blogID}",method = RequestMethod.PUT)
-    public ResponseEntity updateBlog(@PathVariable("blogID")Integer id,@RequestBody  @Validated BlogJsonObj blogJsonObj){
-        blogJsonObj.setId(id);
-        int isSuccess = blogService.updateByPrimaryKey(blogJsonObj);
-        if(isSuccess == 1)
-            return new ResponseEntity(blogJsonObj,HttpStatus.OK);
-        String msg = "updateBlog:更新博客失败,"+ blogJsonObj.toString();
-        log.error(msg);
-        return new ResponseEntity(msg,HttpStatus.BAD_REQUEST);
+    @Transactional
+    public ResponseEntity updateBlog(@PathVariable("blogID")Integer id,@RequestBody  @Validated Blog blog){
+        blog.setId(id);
+        blogService.updateByPrimaryKeySelective(blog);
+        return new ResponseEntity(blogService.selectByPrimaryKey(id),HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{blogID}",method = RequestMethod.DELETE)
+    @Transactional
     public  ResponseEntity deleteBlog(@PathVariable("blogID")Integer blogID){
         int isSuccess = blogService.deleteByPrimaryKey(blogID);
         if(isSuccess == 1){

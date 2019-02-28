@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzy.mywebsitebackend.Data.Mapper.TagMapper">
+
+  <resultMap id="BaseResultMap" type="com.zzy.mywebsitebackend.Data.Entity.Tag">
+    <id column="tag_id" jdbcType="INTEGER" property="id" />
+    <result column="tag_tag_name" jdbcType="VARCHAR" property="tagName" />
+    <result column="tag_img_id" jdbcType="INTEGER" property="imgId" />
+    <association property="tagImg" javaType="com.zzy.mywebsitebackend.Data.Entity.Img"
+                 resultMap="com.zzy.mywebsitebackend.Data.Mapper.ImgMapper.BaseResultMap"/>
+    <collection property="blogInfoIDs" javaType="java.lang.Integer">
+      <result column="archive_blog_info_id" jdbcType="INTEGER"/>
+    </collection>
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    tag.id as tag_id, tag.tag_name as tag_tag_name, tag.img_id as tag_img_id,
+    <include refid="com.zzy.mywebsitebackend.Data.Mapper.ImgMapper.Base_Column_List" />
+    ,<include refid="com.zzy.mywebsitebackend.Data.Mapper.ArchiveMapper.Base_Column_List"/>
+  </sql>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tag tag
+    left join img on tag.img_id=img.id
+    left join archive on tag.id=archive.tag_id
+    where tag.id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectByTagName" parameterType="java.util.List" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from tag tag
+    left join img on tag.img_id=img.id
+    left join archive on tag.id=archive.tag_id
+    where
+    <foreach collection="list" item="tagName" separator=" or ">
+      tag.tag_name = #{tagName,jdbcType=VARCHAR}
+    </foreach>
+  </select>
+
+  <select id="selectAll" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from tag tag
+    left join img on tag.img_id=img.id
+    left join archive on tag.id=archive.tag_id
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete tag
+    from tag
+    where tag.id = #{id,jdbcType=INTEGER}
+  </delete>
+
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.zzy.mywebsitebackend.Data.Entity.Tag" useGeneratedKeys="true">
+    insert ignore into tag (tag_name, img_id)
+    values (#{tagName,jdbcType=VARCHAR}, #{imgId,jdbcType=INTEGER})
+  </insert>
+
+  <insert id="insertAll" keyColumn="id" keyProperty="id" parameterType="java.util.List" useGeneratedKeys="true">
+    insert ignore into tag (tag_name, img_id)
+    values
+    <foreach collection="list" item="tag" separator="," index="index">
+      (#{tag.tagName,jdbcType=VARCHAR}, #{tag.imgId,jdbcType=INTEGER})
+    </foreach>
+  </insert>
+
+  <!--<insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.zzy.mywebsitebackend.Data.Entity.Tag" useGeneratedKeys="true">-->
+    <!--insert into tag-->
+    <!--<trim prefix="(" suffix=")" suffixOverrides=",">-->
+      <!--<if test="tagName != null">-->
+        <!--tag_name,-->
+      <!--</if>-->
+      <!--<if test="imgId != null">-->
+        <!--img_id,-->
+      <!--</if>-->
+    <!--</trim>-->
+    <!--<trim prefix="values (" suffix=")" suffixOverrides=",">-->
+      <!--<if test="tagName != null">-->
+        <!--#{tagName,jdbcType=VARCHAR},-->
+      <!--</if>-->
+      <!--<if test="imgId != null">-->
+        <!--#{imgId,jdbcType=INTEGER},-->
+      <!--</if>-->
+    <!--</trim>-->
+  <!--</insert>-->
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.zzy.mywebsitebackend.Data.Entity.Tag">
+    update tag
+    <set>
+
+      <if test="tagName != null">
+        tag.tag_name = #{tagName,jdbcType=VARCHAR},
+      </if>
+      <if test="imgId != null">
+        tag.img_id = #{imgId,jdbcType=INTEGER},
+      </if>
+    </set>
+    where tag.id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <!--<update id="updateByPrimaryKey" parameterType="com.zzy.mywebsitebackend.Data.Entity.Tag">-->
+    <!--update tag-->
+    <!--left join img on tag.img_id=img.id-->
+    <!--set-->
+      <!--tag_name = #{tagName,jdbcType=VARCHAR},-->
+      <!--img_id = #{imgId,jdbcType=INTEGER},-->
+
+      <!--img.small = #{tagImg.small,jdbcType=VARCHAR},-->
+      <!--img.medium = #{tagImg.medium,jdbcType=VARCHAR},-->
+      <!--img.large = #{tagImg.large,jdbcType=VARCHAR}-->
+    <!--where tag.id = #{id,jdbcType=INTEGER}-->
+  <!--</update>-->
+
+</mapper>

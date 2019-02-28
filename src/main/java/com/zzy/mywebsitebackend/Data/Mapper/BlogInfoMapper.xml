@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzy.mywebsitebackend.Data.Mapper.BlogInfoMapper">
+
+  <resultMap id="BgImgResultMap" type="com.zzy.mywebsitebackend.Data.Entity.Img">
+    <id column="bg_img_id" jdbcType="INTEGER" property="id" />
+    <result column="bg_img_small" jdbcType="VARCHAR" property="small" />
+    <result column="bg_img_medium" jdbcType="VARCHAR" property="medium" />
+    <result column="bg_img_large" jdbcType="VARCHAR" property="large" />
+  </resultMap>
+
+  <resultMap id="BaseResultMap" type="com.zzy.mywebsitebackend.Data.Entity.BlogInfo">
+    <id column="blog_info_id" jdbcType="INTEGER" property="id" />
+    <result column="blog_info_title" jdbcType="VARCHAR" property="title" />
+    <result column="blog_info_time" jdbcType="TIMESTAMP" property="time" />
+    <result column="blog_info_views" jdbcType="INTEGER" property="views" />
+    <result column="blog_info_words" jdbcType="INTEGER" property="words" />
+    <result column="blog_info_blog_id" jdbcType="INTEGER" property="blogId" />
+    <result column="blog_info_last_modified" jdbcType="TIMESTAMP" property="lastModified" />
+    <result column="blog_info_deleted" jdbcType="BIT" property="deleted" />
+    <result column="blog_info_summary" jdbcType="VARCHAR" property="summary" />
+    <result column="blog_info_img_id" jdbcType="INTEGER" property="imgId" />
+    <association property="bgImg" javaType="com.zzy.mywebsitebackend.Data.Entity.Img"
+                 resultMap="com.zzy.mywebsitebackend.Data.Mapper.BlogInfoMapper.BgImgResultMap"/>
+    <collection property="tags" javaType="com.zzy.mywebsitebackend.Data.Entity.Tag"
+                resultMap="com.zzy.mywebsitebackend.Data.Mapper.TagMapper.BaseResultMap"/>
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    blog_info.id as blog_info_id, blog_info.title as blog_info_title, blog_info.time as blog_info_time, 
+    blog_info.views as blog_info_views, blog_info.words as blog_info_words, blog_info.blog_id as blog_info_blog_id, 
+    blog_info.last_modified as blog_info_last_modified, blog_info.deleted as blog_info_deleted, 
+    blog_info.summary as blog_info_summary, blog_info.img_id as blog_info_img_id
+    ,<include refid="com.zzy.mywebsitebackend.Data.Mapper.BlogInfoMapper.Bg_Img_Column_List"/>
+    ,<include refid="com.zzy.mywebsitebackend.Data.Mapper.TagMapper.Base_Column_List"/>
+  </sql>
+
+  <sql id="Bg_Img_Column_List">
+    bg_img.id as bg_img_id, bg_img.small as bg_img_small
+    , bg_img.medium as bg_img_medium, bg_img.large as bg_img_large
+  </sql>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from blog_info
+    left join img as bg_img on blog_info.img_id=bg_img.id
+    left join archive on archive.blog_info_id=blog_info.id
+    left join tag on tag.id=archive.tag_id
+    left join img on tag.img_id=img.id
+    where blog_info.id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectAll" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from blog_info
+    left join img as bg_img on blog_info.img_id=bg_img.id
+    left join archive on archive.blog_info_id=blog_info.id
+    left join tag on tag.id=archive.tag_id
+    left join img on tag.img_id=img.id
+    order by blog_info.id desc
+  </select>
+
+  <select id="selectByLimit" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from blog_info
+    left join img as bg_img on blog_info.img_id=bg_img.id
+    left join archive on archive.blog_info_id=blog_info.id
+    left join tag on tag.id=archive.tag_id
+    left join img on tag.img_id=img.id
+    order by #{sort,jdbcType=VARCHAR} ${order},blog_info.id ${order} limit #{offset,jdbcType=INTEGER},#{count,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectByIds" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from blog_info
+    left join img as bg_img on blog_info.img_id=bg_img.id
+    left join archive on archive.blog_info_id=blog_info.id
+    left join tag on tag.id=archive.tag_id
+    left join img on tag.img_id=img.id
+    where blog_info.id in
+    <foreach collection="ids" item="id" separator="," open="(" close=")">
+      #{id,jdbcType=INTEGER}
+    </foreach>
+    order by #{sort,jdbcType=VARCHAR} ${order},blog_info.id ${order}
+  </select>
+
+  <select id="selectCount" resultType="java.lang.Integer">
+    select count(*)
+    from blog_info
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from blog_info
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.zzy.mywebsitebackend.Data.Entity.BlogInfo" useGeneratedKeys="true">
+    insert into blog_info (title, time, views, 
+      words, blog_id, last_modified, 
+      deleted, summary, img_id
+      )
+    values (#{title,jdbcType=VARCHAR}, #{time,jdbcType=TIMESTAMP}, #{views,jdbcType=INTEGER}, 
+      #{words,jdbcType=INTEGER}, #{blogId,jdbcType=INTEGER}, #{lastModified,jdbcType=TIMESTAMP}, 
+      #{deleted,jdbcType=BIT}, #{summary,jdbcType=VARCHAR}, #{imgId,jdbcType=INTEGER}
+      )
+  </insert>
+
+  <!--<insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.zzy.mywebsitebackend.Data.Entity.BlogInfo" useGeneratedKeys="true">-->
+    <!--insert into blog_info-->
+    <!--<trim prefix="(" suffix=")" suffixOverrides=",">-->
+      <!--<if test="title != null">-->
+        <!--title,-->
+      <!--</if>-->
+      <!--<if test="time != null">-->
+        <!--time,-->
+      <!--</if>-->
+      <!--<if test="views != null">-->
+        <!--views,-->
+      <!--</if>-->
+      <!--<if test="words != null">-->
+        <!--words,-->
+      <!--</if>-->
+      <!--<if test="blogId != null">-->
+        <!--blog_id,-->
+      <!--</if>-->
+      <!--<if test="lastModified != null">-->
+        <!--last_modified,-->
+      <!--</if>-->
+      <!--<if test="deleted != null">-->
+        <!--deleted,-->
+      <!--</if>-->
+      <!--<if test="summary != null">-->
+        <!--summary,-->
+      <!--</if>-->
+      <!--<if test="imgId != null">-->
+        <!--img_id,-->
+      <!--</if>-->
+    <!--</trim>-->
+    <!--<trim prefix="values (" suffix=")" suffixOverrides=",">-->
+      <!--<if test="title != null">-->
+        <!--#{title,jdbcType=VARCHAR},-->
+      <!--</if>-->
+      <!--<if test="time != null">-->
+        <!--#{time,jdbcType=TIMESTAMP},-->
+      <!--</if>-->
+      <!--<if test="views != null">-->
+        <!--#{views,jdbcType=INTEGER},-->
+      <!--</if>-->
+      <!--<if test="words != null">-->
+        <!--#{words,jdbcType=INTEGER},-->
+      <!--</if>-->
+      <!--<if test="blogId != null">-->
+        <!--#{blogId,jdbcType=INTEGER},-->
+      <!--</if>-->
+      <!--<if test="lastModified != null">-->
+        <!--#{lastModified,jdbcType=TIMESTAMP},-->
+      <!--</if>-->
+      <!--<if test="deleted != null">-->
+        <!--#{deleted,jdbcType=BIT},-->
+      <!--</if>-->
+      <!--<if test="summary != null">-->
+        <!--#{summary,jdbcType=VARCHAR},-->
+      <!--</if>-->
+      <!--<if test="imgId != null">-->
+        <!--#{imgId,jdbcType=INTEGER},-->
+      <!--</if>-->
+    <!--</trim>-->
+  <!--</insert>-->
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.zzy.mywebsitebackend.Data.Entity.BlogInfo">
+    update blog_info
+    <set>
+      <if test="title != null">
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="time != null">
+        time = #{time,jdbcType=TIMESTAMP},
+      </if>
+      <if test="views != null">
+        views = #{views,jdbcType=INTEGER},
+      </if>
+      <if test="words != null">
+        words = #{words,jdbcType=INTEGER},
+      </if>
+      <if test="blogId != null">
+        blog_id = #{blogId,jdbcType=INTEGER},
+      </if>
+      <if test="lastModified != null">
+        last_modified = #{lastModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deleted != null">
+        deleted = #{deleted,jdbcType=BIT},
+      </if>
+      <if test="summary != null">
+        summary = #{summary,jdbcType=VARCHAR},
+      </if>
+      <if test="imgId != null">
+        img_id = #{imgId,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <!--<update id="updateByPrimaryKey" parameterType="com.zzy.mywebsitebackend.Data.Entity.BlogInfo">-->
+    <!--update blog_info-->
+    <!--set title = #{title,jdbcType=VARCHAR},-->
+      <!--time = #{time,jdbcType=TIMESTAMP},-->
+      <!--views = #{views,jdbcType=INTEGER},-->
+      <!--words = #{words,jdbcType=INTEGER},-->
+      <!--blog_id = #{blogId,jdbcType=INTEGER},-->
+      <!--last_modified = #{lastModified,jdbcType=TIMESTAMP},-->
+      <!--deleted = #{deleted,jdbcType=BIT},-->
+      <!--summary = #{summary,jdbcType=VARCHAR},-->
+      <!--img_id = #{imgId,jdbcType=INTEGER}-->
+    <!--where id = #{id,jdbcType=INTEGER}-->
+  <!--</update>-->
+
+</mapper>

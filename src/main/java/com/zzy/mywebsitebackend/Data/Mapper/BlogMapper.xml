@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzy.mywebsitebackend.Data.Mapper.BlogMapper">
+  <resultMap id="BaseResultMap" type="com.zzy.mywebsitebackend.Data.Entity.Blog">
+    <id column="blog_id" jdbcType="INTEGER" property="id" />
+    <result column="blog_content" jdbcType="VARCHAR" property="content" />
+    <association property="blogInfo" javaType="BlogInfo"
+                 resultMap="com.zzy.mywebsitebackend.Data.Mapper.BlogInfoMapper.BaseResultMap"/>
+  </resultMap>
+  <sql id="Base_Column_List">
+    blog.id as blog_id, blog.content as blog_content,
+    <include refid="com.zzy.mywebsitebackend.Data.Mapper.BlogInfoMapper.Base_Column_List" />
+  </sql>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from blog blog
+    left join blog_info on blog.id=blog_info.blog_id
+    left join img as bg_img on blog_info.img_id=bg_img.id
+    left join archive on archive.blog_info_id=blog_info.id
+    left join tag on tag.id=archive.tag_id
+    left join img on tag.img_id=img.id
+    where blog.id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectAll" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from  blog
+    left join blog_info on blog.id=blog_info.blog_id
+    left join img as bg_img on blog_info.img_id=bg_img.id
+    left join archive on archive.blog_info_id=blog_info.id
+    left join tag on tag.id=archive.tag_id
+    left join img on tag.img_id=img.id
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete blog from blog
+    where blog.id = #{id,jdbcType=INTEGER}
+  </delete>
+
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.zzy.mywebsitebackend.Data.Entity.Blog" useGeneratedKeys="true">
+    insert into blog (content)
+    values (#{content,jdbcType=VARCHAR})
+  </insert>
+
+  <!--<insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.zzy.mywebsitebackend.Data.Entity.Blog" useGeneratedKeys="true">-->
+    <!--insert into blog-->
+    <!--<trim prefix="(" suffix=")" suffixOverrides=",">-->
+      <!--<if test="content != null">-->
+        <!--content,-->
+      <!--</if>-->
+    <!--</trim>-->
+    <!--<trim prefix="values (" suffix=")" suffixOverrides=",">-->
+      <!--<if test="content != null">-->
+        <!--#{content,jdbcType=VARCHAR},-->
+      <!--</if>-->
+    <!--</trim>-->
+  <!--</insert>-->
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.zzy.mywebsitebackend.Data.Entity.Blog">
+    update blog
+    <set>
+      <if test="content != null">
+        blog.content = #{content,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where blog.id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <!--<update id="updateByPrimaryKey" parameterType="com.zzy.mywebsitebackend.Data.Entity.Blog">-->
+    <!--update blog-->
+    <!--left join blog_info on blog.id=blog_info.blog_id-->
+    <!--left join  img on blog_info.img_id=img.id-->
+    <!--set-->
+    <!--blog.content = #{content,jdbcType=VARCHAR}-->
+
+    <!--blog_info.title = #{blogInfo.title,jdbcType=VARCHAR},-->
+    <!--blog_info.time = #{blogInfo.time,jdbcType=TIMESTAMP},-->
+    <!--blog_info.views = #{blogInfo.views,jdbcType=INTEGER},-->
+    <!--blog_info.words = #{blogInfo.words,jdbcType=INTEGER},-->
+    <!--blog_info.blog_id = #{blogInfo.blogId,jdbcType=INTEGER},-->
+    <!--blog_info.last_modified = #{blogInfo.lastModified,jdbcType=TIMESTAMP},-->
+    <!--blog_info.deleted = #{blogInfo.deleted,jdbcType=BIT},-->
+    <!--blog_info.summary = #{blogInfo.summary,jdbcType=VARCHAR},-->
+    <!--blog_info.img_id = #{blogInfo.imgId,jdbcType=INTEGER}-->
+
+    <!--img.small = #{blogInfo.bgImg.small,jdbcType=VARCHAR},-->
+    <!--img.medium = #{blogInfo.bgImg.medium,jdbcType=VARCHAR},-->
+    <!--img.large = #{blogInfo.bgImg.large,jdbcType=VARCHAR}-->
+
+    <!--where blog.id = #{id,jdbcType=INTEGER}-->
+  <!--</update>-->
+</mapper>

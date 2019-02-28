@@ -1,13 +1,25 @@
 package com.zzy.mywebsitebackend.Data.Entity;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+
 public class User {
+
+    @Pattern(regexp = "^([a-fA-F0-9]{32})$")
     private String id;
 
-    private String user_name;
+    @NotBlank(message = "用户名不能为空")
+    private String userName;
 
+    private Integer avatarImgId;
+
+    @NotNull(message = "avatar不能为null")
+    private Img avatar = new Img();
+
+    @Email(message = "邮箱格式不正确")
     private String email;
-
-    private String avatar;
 
     public String getId() {
         return id;
@@ -17,12 +29,20 @@ public class User {
         this.id = id == null ? null : id.trim();
     }
 
-    public String getUser_name() {
-        return user_name;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setUser_name(String user_name) {
-        this.user_name = user_name == null ? null : user_name.trim();
+    public void setUserName(String userName) {
+        this.userName = userName == null ? null : userName.trim();
+    }
+
+    public Integer getAvatarImgId() {
+        return avatarImgId;
+    }
+
+    public void setAvatarImgId(Integer avatarImgId) {
+        this.avatarImgId = avatarImgId;
     }
 
     public String getEmail() {
@@ -33,11 +53,22 @@ public class User {
         this.email = email == null ? null : email.trim();
     }
 
-    public String getAvatar() {
+    public Img getAvatar() {
         return avatar;
     }
 
-    public void setAvatar(String avatar) {
-        this.avatar = avatar == null ? null : avatar.trim();
+    public void setAvatar(Img avatar) {
+        this.avatar = avatar;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id='" + id + '\'' +
+                ", userName='" + userName + '\'' +
+                ", avatarImgId=" + avatarImgId +
+                ", avatar=" + avatar +
+                ", email='" + email + '\'' +
+                '}';
     }
 }
