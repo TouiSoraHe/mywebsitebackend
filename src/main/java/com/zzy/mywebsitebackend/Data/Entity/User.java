@@ -1,5 +1,7 @@
 package com.zzy.mywebsitebackend.Data.Entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -13,6 +15,7 @@ public class User {
     @NotBlank(message = "用户名不能为空")
     private String userName;
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Integer avatarImgId;
 
     @NotNull(message = "avatar不能为null")

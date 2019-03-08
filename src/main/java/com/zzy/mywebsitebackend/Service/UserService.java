@@ -44,6 +44,7 @@ public class UserService {
 
     public int deleteByPrimaryKey(String userId){
         User user = selectByPrimaryKey(userId);
+        if(user == null) return 0;
         int ret = mapper.deleteByPrimaryKey(user.getId());
         imgService.deleteByPrimaryKey(user.getAvatarImgId());
         return ret;

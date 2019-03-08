@@ -1,5 +1,7 @@
 package com.zzy.mywebsitebackend.Data.Entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
@@ -13,20 +15,26 @@ public class BlogInfo {
     @NotBlank(message = "title不能为空")
     private String title;
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Date time;
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Integer views;
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Integer words;
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Integer blogId;
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Date lastModified;
 
     private Boolean deleted;
 
     private String summary;
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Integer imgId;
 
     @NotNull(message = "bgImg不能为null")

@@ -1,5 +1,7 @@
 package com.zzy.mywebsitebackend.Data.Entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
@@ -12,6 +14,7 @@ public class Tag {
     @NotBlank(message = "标签名不能为空")
     private String tagName;
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Integer imgId;
 
     @NotNull(message = "blogInfoIDs不能为null")

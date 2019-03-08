@@ -16,7 +16,13 @@ public class ArchiveService {
     private ArchiveMapper mapper;
 
     public int insert(Archive var0){
-        return mapper.insert(var0);
+        int ret = 0;
+        try{
+            ret = mapper.insert(var0);
+        } catch (org.springframework.dao.DuplicateKeyException e){
+
+        }
+        return ret;
     }
 
     public Archive selectByPrimaryKey(Integer var0){
@@ -40,7 +46,13 @@ public class ArchiveService {
 //    }
 
     public int insertAll(List<Archive> archives) {
-        return mapper.insertAll(archives);
+        int ret = 0;
+        try{
+            ret = mapper.insertAll(archives);
+        } catch (org.springframework.dao.DuplicateKeyException e){
+
+        }
+        return ret;
     }
 
     public List<Archive> selectByBlogInfoId(Integer id) {

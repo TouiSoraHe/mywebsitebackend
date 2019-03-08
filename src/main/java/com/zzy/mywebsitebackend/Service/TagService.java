@@ -63,6 +63,7 @@ public class TagService {
     @Transactional
     public int insertAll(List<Tag> tags)
     {
+        if(tags.size() == 0 ) return 0;
         List<Img> imgs = new ArrayList<>();
         for (Tag tag:tags) {
             imgs.add(tag.getTagImg());
@@ -75,7 +76,7 @@ public class TagService {
         List<Tag> newTags = selectByTags(tags);
         for (Tag newTag:newTags) {
             for (Tag tag:tags) {
-                if(tag.getTagName().equals(newTag.getTagName())){
+                if(tag.getTagName().toLowerCase().equals(newTag.getTagName().toLowerCase())){
                     if(!newTag.getImgId().equals(tag.getImgId())){
                         imgService.deleteByPrimaryKey(tag.getImgId());
                     }
@@ -108,6 +109,7 @@ public class TagService {
     @Transactional
     public int deleteByPrimaryKey(Integer id){
         Tag tag = mapper.selectByPrimaryKey(id);
+        if(tag == null) return 0;
         int ret = mapper.deleteByPrimaryKey(id);
         imgService.deleteByPrimaryKey(tag.getImgId());
         return ret;

@@ -3,10 +3,13 @@ package com.zzy.mywebsitebackend.Controller;
 import com.zzy.mywebsitebackend.Data.Entity.Tag;
 import com.zzy.mywebsitebackend.Service.TagService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.authz.annotation.Logical;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,6 +27,7 @@ public class TagController {
     private TagService tagService;
 
     @RequestMapping(value = "/{tagId}",method = RequestMethod.GET)
+    @Transactional
     public ResponseEntity getTag(@PathVariable("tagId")Integer tagId) {
         Tag tag = tagService.selectByPrimaryKey(tagId);
         if(tag == null){
@@ -35,18 +39,23 @@ public class TagController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
+    @Transactional
     public ResponseEntity getTags() {
         List<Tag> tagJsonObjs = tagService.selectAll();
         return new ResponseEntity(tagJsonObjs,HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.POST)
+    @Transactional
+    @RequiresPermissions(logical = Logical.AND, value = {"Add"})
     public ResponseEntity addTag(@RequestBody  @Validated Tag tag){
         tagService.insert(tag);
         return  new ResponseEntity(tag,HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/{tagId}",method = RequestMethod.PUT)
+    @Transactional
+    @RequiresPermissions(logical = Logical.AND, value = {"Edit"})
     public ResponseEntity updateTag(@PathVariable("tagId")Integer id,@RequestBody @Validated Tag tag){
         tag.setId(id);
         tagService.updateByPrimaryKeySelective(tag);
@@ -54,6 +63,8 @@ public class TagController {
     }
 
     @RequestMapping(value = "/{tagId}",method = RequestMethod.DELETE)
+    @Transactional
+    @RequiresPermissions(logical = Logical.AND, value = {"Delete"})
     public  ResponseEntity deleteTag(@PathVariable("tagId")Integer tagId){
         tagService.deleteByPrimaryKey(tagId);
         return new ResponseEntity("删除成功",HttpStatus.OK);

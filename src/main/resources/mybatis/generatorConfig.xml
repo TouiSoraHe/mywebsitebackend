@@ -131,5 +131,16 @@
             <generatedKey column="id" sqlStatement="JDBC" identity="true" />
         </table>
 
+        <table tableName="backend_user"
+               enableSelectByExample="false"
+               enableDeleteByExample="false"
+               enableCountByExample="false"
+               enableUpdateByExample="false"
+               alias="backend_user">
+            <property name="useActualColumnNames" value="false"/>
+            <!--该元素可以实现主键的自增:@Options(useGeneratedKeys=true,keyProperty="id")-->
+            <generatedKey column="id" sqlStatement="JDBC" identity="true" />
+        </table>
+
     </context>
 </generatorConfiguration>

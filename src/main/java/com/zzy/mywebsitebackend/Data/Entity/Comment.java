@@ -1,5 +1,7 @@
 package com.zzy.mywebsitebackend.Data.Entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -15,11 +17,13 @@ public class Comment {
     @NotNull
     private Integer parentId;
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Date time;
 
     @NotNull
     private Integer blogId;
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String userId;
 
     @Valid

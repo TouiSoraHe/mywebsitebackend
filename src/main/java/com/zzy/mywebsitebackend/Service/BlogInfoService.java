@@ -67,6 +67,7 @@ public class BlogInfoService {
 
     public int deleteByPrimaryKey(Integer id){
         BlogInfo blogInfo = selectByPrimaryKey(id);
+        if(blogInfo == null) return 0;
         int ret = mapper.deleteByPrimaryKey(id);
         imgService.deleteByPrimaryKey(blogInfo.getImgId());
         blogMapper.deleteByPrimaryKey(blogInfo.getBlogId());

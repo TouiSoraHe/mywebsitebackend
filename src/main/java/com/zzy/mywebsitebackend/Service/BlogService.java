@@ -51,6 +51,7 @@ public class BlogService {
     @Transactional
     public int deleteByPrimaryKey(Integer id){
         Blog blog = selectByPrimaryKey(id);
+        if(blog==null)return 0;
         blogInfoService.deleteByPrimaryKey(blog.getBlogInfo().getId());
         int ret = mapper.deleteByPrimaryKey(id);
         return ret;

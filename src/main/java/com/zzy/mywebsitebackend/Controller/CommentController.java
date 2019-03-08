@@ -3,10 +3,13 @@ package com.zzy.mywebsitebackend.Controller;
 import com.zzy.mywebsitebackend.Data.Entity.Comment;
 import com.zzy.mywebsitebackend.Service.CommentService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.authz.annotation.Logical;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,12 +28,15 @@ public class CommentController {
     private CommentService commentService;
 
     @RequestMapping(method = RequestMethod.POST)
+    @Transactional
+    @RequiresPermissions(logical = Logical.AND, value = {"Add"})
     public ResponseEntity addComment(@RequestBody @Validated Comment comment) {
         commentService.insert(comment);
         return new ResponseEntity(comment, HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/{commentId}", method = RequestMethod.GET)
+    @Transactional
     public ResponseEntity getComment(@PathVariable("commentId") Integer commentId) {
         Comment comment = commentService.selectByPrimaryKey(commentId);
         if (comment == null) {
@@ -42,6 +48,7 @@ public class CommentController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
+    @Transactional
     public ResponseEntity getComments(Integer blogID, Integer _limit, Integer _page, String _sort, String _order, HttpServletResponse response) {
         List<Comment> comments;
         if (blogID != null && _limit != null && _page != null) {
@@ -68,6 +75,8 @@ public class CommentController {
     }
 
     @RequestMapping(value = "/{commentId}", method = RequestMethod.PUT)
+    @Transactional
+    @RequiresPermissions(logical = Logical.AND, value = {"Edit"})
     public ResponseEntity updateComment(@PathVariable("commentId") Integer commentId, @RequestBody @Validated Comment comment) {
         comment.setId(commentId);
         commentService.updateByPrimaryKeySelective(comment);
@@ -75,6 +84,8 @@ public class CommentController {
     }
 
     @RequestMapping(value = "/{commentId}", method = RequestMethod.DELETE)
+    @Transactional
+    @RequiresPermissions(logical = Logical.AND, value = {"Delete"})
     public ResponseEntity deleteComment(@PathVariable("commentId") Integer commentId) {
         commentService.deleteByPrimaryKey(commentId);
         return new ResponseEntity("删除成功", HttpStatus.OK);
