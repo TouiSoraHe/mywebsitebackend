@@ -29,7 +29,6 @@ public class CommentController {
 
     @RequestMapping(method = RequestMethod.POST)
     @Transactional
-    @RequiresPermissions(logical = Logical.AND, value = {"Add"})
     public ResponseEntity addComment(@RequestBody @Validated Comment comment) {
         commentService.insert(comment);
         return new ResponseEntity(comment, HttpStatus.CREATED);

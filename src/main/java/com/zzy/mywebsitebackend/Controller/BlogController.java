@@ -33,8 +33,7 @@ public class BlogController {
     @Transactional
     public ResponseEntity getBlog(@PathVariable("blogID")Integer blogID) {
         Blog blog = blogService.selectByPrimaryKey(blogID);
-        Subject subject = SecurityUtils.getSubject();
-        if (blog == null || (blog.getBlogInfo().getDeleted() && !subject.hasRole("admin"))) {
+        if (blog == null || (blog.getBlogInfo().getDeleted() && !SecurityUtils.getSubject().hasRole("admin"))) {
             String msg = "没有找到ID为"+blogID+"的博客";
             log.error("getBlog:"+msg);
             return new ResponseEntity(msg,HttpStatus.NOT_FOUND);
@@ -49,7 +48,7 @@ public class BlogController {
         Subject subject = SecurityUtils.getSubject();
         for (Iterator<Blog> iter = blogs.listIterator(); iter.hasNext(); ) {
             Blog blog = iter.next();
-            if (blog.getBlogInfo().getDeleted() && !subject.hasRole("admin")){
+            if (blog.getBlogInfo().getDeleted() && !SecurityUtils.getSubject().hasRole("admin")){
                 iter.remove();
             }
         }

@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,8 +33,7 @@ public class BlogInfoController {
     @Transactional
     public ResponseEntity getBlogInfo(@PathVariable("blogInfoId") Integer blogInfoId) {
         BlogInfo blogInfo = blogInfoService.selectByPrimaryKey(blogInfoId);
-        Subject subject = SecurityUtils.getSubject();
-        if (blogInfo == null || (blogInfo.getDeleted() && !subject.hasRole("admin"))) {
+        if (blogInfo == null || (blogInfo.getDeleted() && !SecurityUtils.getSubject().hasRole("admin"))) {
             String msg = "没有找到ID为" + blogInfoId + "的博客信息";
             log.error("getBlogInfo:" + msg);
             return new ResponseEntity(msg, HttpStatus.NOT_FOUND);
@@ -50,17 +48,15 @@ public class BlogInfoController {
         if (_limit != null && _page != null) {
             Integer offset = (_page - 1) * _limit;
             blogInfos = blogInfoService.selectByLimit(_sort,_order,offset,_limit);
-            int xTotalCount = blogInfoService.selectCount();
-            response.setIntHeader("x-total-count",xTotalCount);
+            response.setIntHeader("x-total-count",blogInfoService.selectCount());
         }else if(id!=null && id.length>0){
             blogInfos = blogInfoService.selectByIds(_sort,_order,id);
         }else {
             blogInfos = blogInfoService.selectAll();
         }
-        Subject subject = SecurityUtils.getSubject();
         for (Iterator<BlogInfo> iter = blogInfos.listIterator(); iter.hasNext(); ) {
             BlogInfo blogInfo = iter.next();
-            if (blogInfo.getDeleted() && !subject.hasRole("admin")){
+            if (blogInfo.getDeleted() && !SecurityUtils.getSubject().hasRole("admin")){
                 iter.remove();
             }
         }
