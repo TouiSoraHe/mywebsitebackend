@@ -34,7 +34,24 @@ CREATE TABLE `archive` (
   KEY `tag_id_fk_idx` (`tag_id`),
   CONSTRAINT `blog_info_id_fk` FOREIGN KEY (`blog_info_id`) REFERENCES `blog_info` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `tag_id_fk` FOREIGN KEY (`tag_id`) REFERENCES `tag` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=253 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=543 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `backend_user`
+--
+
+DROP TABLE IF EXISTS `backend_user`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+ SET character_set_client = utf8mb4 ;
+CREATE TABLE `backend_user` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `username` varchar(45) COLLATE utf8_bin NOT NULL,
+  `password` varchar(45) COLLATE utf8_bin NOT NULL,
+  `permission` int(11) NOT NULL,
+  `role` varchar(45) COLLATE utf8_bin NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -48,7 +65,7 @@ CREATE TABLE `blog` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `content` text CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=233 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=309 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -74,7 +91,7 @@ CREATE TABLE `blog_info` (
   KEY `img_id_fk_idx` (`img_id`),
   CONSTRAINT `blog_id_fk` FOREIGN KEY (`blog_id`) REFERENCES `blog` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `img_id_fk` FOREIGN KEY (`img_id`) REFERENCES `img` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE=InnoDB AUTO_INCREMENT=162 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=225 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -95,7 +112,7 @@ CREATE TABLE `comment` (
   PRIMARY KEY (`id`),
   KEY `user_id_fk_idx` (`user_id`),
   CONSTRAINT `user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE=InnoDB AUTO_INCREMENT=102 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=110 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -111,7 +128,7 @@ CREATE TABLE `img` (
   `medium` varchar(200) COLLATE utf8_bin DEFAULT NULL,
   `large` varchar(200) COLLATE utf8_bin DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=900 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=1228 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -130,7 +147,7 @@ CREATE TABLE `tag` (
   KEY `img_id_fk_idx` (`img_id`),
   KEY `tag_img_id_fk_idx` (`img_id`) /*!80000 INVISIBLE */,
   CONSTRAINT `tag_img_id_fk` FOREIGN KEY (`img_id`) REFERENCES `img` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=545 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=769 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -168,4 +185,4 @@ CREATE TABLE `user` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-02-28  9:38:00
+-- Dump completed on 2019-03-08 16:57:48
