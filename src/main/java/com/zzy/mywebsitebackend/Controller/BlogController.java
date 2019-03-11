@@ -1,5 +1,6 @@
 package com.zzy.mywebsitebackend.Controller;
 
+import com.zzy.mywebsitebackend.Component.ViewsCount;
 import com.zzy.mywebsitebackend.Data.Entity.Blog;
 import com.zzy.mywebsitebackend.Service.BlogService;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Iterator;
 import java.util.List;
 
@@ -29,15 +31,20 @@ public class BlogController {
     @Autowired
     private BlogService blogService;
 
+    @Autowired
+    private ViewsCount viewsCount;
+
     @RequestMapping(value = "/{blogID}",method = RequestMethod.GET)
     @Transactional
-    public ResponseEntity getBlog(@PathVariable("blogID")Integer blogID) {
+    public ResponseEntity getBlog(@PathVariable("blogID")Integer blogID, HttpServletRequest request) {
         Blog blog = blogService.selectByPrimaryKey(blogID);
         if (blog == null || (blog.getBlogInfo().getDeleted() && !SecurityUtils.getSubject().hasRole("admin"))) {
             String msg = "没有找到ID为"+blogID+"的博客";
             log.error("getBlog:"+msg);
             return new ResponseEntity(msg,HttpStatus.NOT_FOUND);
         }
+        viewsCount.AddCount(blog.getBlogInfo().getId(),request);
+        blog.getBlogInfo().setViews(blog.getBlogInfo().getViews() + viewsCount.GetCount(blog.getBlogInfo().getId()));
         return new ResponseEntity(blog,HttpStatus.OK);
     }
 

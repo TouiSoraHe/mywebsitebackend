@@ -1,5 +1,6 @@
 package com.zzy.mywebsitebackend.Controller;
 
+import com.zzy.mywebsitebackend.Component.ViewsCount;
 import com.zzy.mywebsitebackend.Data.Entity.BlogInfo;
 import com.zzy.mywebsitebackend.Service.BlogInfoService;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +30,9 @@ public class BlogInfoController {
     @Autowired
     private BlogInfoService blogInfoService;
 
+    @Autowired
+    private ViewsCount viewsCount;
+
     @RequestMapping(value = "/{blogInfoId}", method = RequestMethod.GET)
     @Transactional
     public ResponseEntity getBlogInfo(@PathVariable("blogInfoId") Integer blogInfoId) {
@@ -38,6 +42,7 @@ public class BlogInfoController {
             log.error("getBlogInfo:" + msg);
             return new ResponseEntity(msg, HttpStatus.NOT_FOUND);
         }
+        blogInfo.setViews(blogInfo.getViews() + viewsCount.GetCount(blogInfo.getId()));
         return new ResponseEntity(blogInfo, HttpStatus.OK);
     }
 
@@ -58,6 +63,8 @@ public class BlogInfoController {
             BlogInfo blogInfo = iter.next();
             if (blogInfo.getDeleted() && !SecurityUtils.getSubject().hasRole("admin")){
                 iter.remove();
+            }else{
+                blogInfo.setViews(blogInfo.getViews() + viewsCount.GetCount(blogInfo.getId()));
             }
         }
         return new ResponseEntity(blogInfos, HttpStatus.OK);

@@ -80,7 +80,6 @@ public class BlogInfoService {
 
     public int updateByPrimaryKeySelective(BlogInfo blogInfo){
         blogInfo.setTime(null);
-        blogInfo.setViews(null);
         blogInfo.setLastModified(new Date());
         blogInfo.setBlogId(null);
         blogInfo.setImgId(null);
