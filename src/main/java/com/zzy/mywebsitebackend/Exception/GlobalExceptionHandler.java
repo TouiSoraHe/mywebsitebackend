@@ -28,7 +28,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(ShiroException.class)
     @ExceptionAopTarget
-    public ResponseEntity handle401(ShiroException e) {
+    public ResponseEntity handle401(HttpServletRequest request,ShiroException e) {
         return new ResponseEntity("未认证(Unauthenticated):" + e.getMessage(),HttpStatus.UNAUTHORIZED);
     }
 
@@ -40,7 +40,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(UnauthenticatedException.class)
     @ExceptionAopTarget
-    public ResponseEntity handle401(UnauthenticatedException e) {
+    public ResponseEntity handle401(HttpServletRequest request,UnauthenticatedException e) {
         return new ResponseEntity("未认证(Unauthenticated):" + e.getMessage(),HttpStatus.UNAUTHORIZED);
     }
 
@@ -51,7 +51,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(UnauthorizedException.class)
     @ExceptionAopTarget
-    public ResponseEntity handle403(UnauthorizedException e) {
+    public ResponseEntity handle403(HttpServletRequest request,UnauthorizedException e) {
         return new ResponseEntity("无权访问(Unauthorized):" + e.getMessage(),HttpStatus.FORBIDDEN);
     }
 
