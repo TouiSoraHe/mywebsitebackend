@@ -4,6 +4,7 @@ import com.zzy.mywebsitebackend.AOP.AnnotationTarget.ExceptionAopTarget;
 import org.apache.shiro.ShiroException;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
+import org.mybatis.spring.MyBatisSystemException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -67,10 +68,15 @@ public class GlobalExceptionHandler {
         return  new ResponseEntity(e.getMessage(),HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(MyBatisSystemException.class)
+    @ExceptionAopTarget
+    public ResponseEntity MyBatisSystemExceptionHandler(HttpServletRequest request,Exception e) {
+        return new ResponseEntity<>("数据库连接错误,请联系后台管理员", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
     @ExceptionHandler(Exception.class)
     @ExceptionAopTarget
     public ResponseEntity DefaultErrorHandler(HttpServletRequest request,Exception e) {
-        e.printStackTrace();
         return new ResponseEntity<>(e.getClass().getName()+":"+e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 

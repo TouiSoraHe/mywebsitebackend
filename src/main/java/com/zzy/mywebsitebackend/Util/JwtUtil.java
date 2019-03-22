@@ -66,7 +66,6 @@ public class JwtUtil {
             // 帐号加JWT私钥加密
             String secret = username+ password + Properties.getEncryptJWTKey();
             // 此处过期时间是以毫秒为单位，所以乘以1000
-            System.out.println(Properties.getAccessTokenExpireTime());
             Date date = new Date(System.currentTimeMillis() + Long.parseLong(Properties.getAccessTokenExpireTime()) * 1000);
             Algorithm algorithm = Algorithm.HMAC256(secret);
             // 附带account帐号信息
