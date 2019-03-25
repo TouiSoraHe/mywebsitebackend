@@ -3,12 +3,14 @@ package com.zzy.mywebsitebackend.Service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.zzy.mywebsitebackend.AOP.Entity.ExceptionInfo;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ResourceUtils;
 
 import javax.annotation.PostConstruct;
-import java.io.*;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 
 @Service
@@ -72,8 +74,8 @@ public class ExceptionInfoService {
     private static List<ExceptionInfo> readFromFile() {
         List<ExceptionInfo> ret = new ArrayList<>();
         try {
-            File file = ResourceUtils.getFile("classpath:ExceptionInfo.json");
-            List<ExceptionInfo> temp = JSON.parseObject(Files.readAllBytes(file.toPath()),new TypeReference<List<ExceptionInfo>>() {}.getType());
+            ClassPathResource resource = new ClassPathResource("ExceptionInfo.json");
+            List<ExceptionInfo> temp = JSON.parseObject(Files.readAllBytes(Paths.get(resource.getURI())),new TypeReference<List<ExceptionInfo>>() {}.getType());
             if (temp!=null){
                 ret = temp;
             }
@@ -91,9 +93,9 @@ public class ExceptionInfoService {
 
     private static boolean saveToFile(List<ExceptionInfo> exceptionInfos) {
         try {
-            File file = ResourceUtils.getFile("classpath:ExceptionInfo.json");
+            ClassPathResource resource = new ClassPathResource("ExceptionInfo.json");
             String json = JSON.toJSONString(exceptionInfos);
-            Files.write(file.toPath(),json.getBytes());
+            Files.write(Paths.get(resource.getURI()),json.getBytes());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             return false;

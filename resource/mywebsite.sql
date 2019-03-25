@@ -18,155 +18,84 @@ USE `mywebsite`;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `archive`
+-- Dumping data for table `archive`
 --
 
-DROP TABLE IF EXISTS `archive`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
-CREATE TABLE `archive` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `blog_info_id` int(11) NOT NULL,
-  `tag_id` int(11) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `tag_blog_info_unique` (`blog_info_id`,`tag_id`),
-  KEY `blog_info_id_fk_idx` (`blog_info_id`) /*!80000 INVISIBLE */,
-  KEY `tag_id_fk_idx` (`tag_id`),
-  CONSTRAINT `blog_info_id_fk` FOREIGN KEY (`blog_info_id`) REFERENCES `blog_info` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `tag_id_fk` FOREIGN KEY (`tag_id`) REFERENCES `tag` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=543 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+LOCK TABLES `archive` WRITE;
+/*!40000 ALTER TABLE `archive` DISABLE KEYS */;
+INSERT INTO `archive` VALUES (549,225,773),(552,225,777),(553,225,778),(554,225,779),(555,225,780),(556,225,781),(557,225,782),(560,227,773),(559,229,773),(562,229,777),(563,229,778),(564,229,779),(565,229,780),(566,229,781),(567,229,782);
+/*!40000 ALTER TABLE `archive` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
--- Table structure for table `backend_user`
+-- Dumping data for table `backend_user`
 --
 
-DROP TABLE IF EXISTS `backend_user`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
-CREATE TABLE `backend_user` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `username` varchar(45) COLLATE utf8_bin NOT NULL,
-  `password` varchar(45) COLLATE utf8_bin NOT NULL,
-  `permission` int(11) NOT NULL,
-  `role` varchar(45) COLLATE utf8_bin NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-/*!40101 SET character_set_client = @saved_cs_client */;
+LOCK TABLES `backend_user` WRITE;
+/*!40000 ALTER TABLE `backend_user` DISABLE KEYS */;
+INSERT INTO `backend_user` VALUES (2,'zzy','1156846412',15,'admin'),(3,'guest','guest',0,'guest');
+/*!40000 ALTER TABLE `backend_user` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
--- Table structure for table `blog`
+-- Dumping data for table `blog`
 --
 
-DROP TABLE IF EXISTS `blog`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
-CREATE TABLE `blog` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `content` text CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=309 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+LOCK TABLES `blog` WRITE;
+/*!40000 ALTER TABLE `blog` DISABLE KEYS */;
+INSERT INTO `blog` VALUES (309,'今天发现了一个问题,就是通过代码来为Material设置法线贴图,但是设置后没有效果,需要在场景中来回切换一下才可以.如图所示:\n![](https://ws1.sinaimg.cn/large/006nw0Eagy1g0yw3fu6qkg30yh0mw486.gif)\n\n这是我Test里面的代码:\n```csharp \n[MenuItem(\"Test/Test\")]\npublic static void Test()\n{\n    Texture texture = Resources.Load<Texture>(\"BMW.fbm/luntai_Low_Luntai_Normal\");\n    Material material = Resources.Load<Material>(\"Materials/luntai_Low_Luntai_AlbedoTransparency\");\n    material.SetTexture(\"_BumpMap\", texture);\n}\n```\n\n没什么特别的,就是将Texture和Material加载出来并且将Texture设置为Material的法线贴图!不管怎么刷新AssetDatabase.Refresh或者导入AssetsSetting.ImportAsset都没用,最后在官网找到解决方案!\n\n需要使用EnableKeyword方法来为Standard Shader启用正确的关键字!例如对于设置法线贴图而言只需要添加一行代码即可:\n```csharp\n[MenuItem(\"Test/Test\")]\npublic static void Test()\n{\n    Texture texture = Resources.Load<Texture>(\"BMW.fbm/luntai_Low_Luntai_Normal\");\n    Material material = Resources.Load<Material>(\"Materials/luntai_Low_Luntai_AlbedoTransparency\");\n    material.SetTexture(\"_BumpMap\", texture);\n    material.EnableKeyword(\"_NORMALMAP\");\n}\n```\n\n关于该问题的更多详细信息,请查看官网文档:https://docs.unity3d.com/Manual/MaterialsAccessingViaScript.html'),(310,'hahahah'),(311,'hahahah'),(312,'hahahah'),(313,'hahahah');
+/*!40000 ALTER TABLE `blog` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
--- Table structure for table `blog_info`
+-- Dumping data for table `blog_info`
 --
 
-DROP TABLE IF EXISTS `blog_info`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
-CREATE TABLE `blog_info` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `title` varchar(100) NOT NULL,
-  `time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `views` int(11) NOT NULL DEFAULT '0',
-  `words` int(11) NOT NULL,
-  `blog_id` int(11) NOT NULL,
-  `last_modified` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `deleted` tinyint(1) NOT NULL,
-  `summary` varchar(1000) NOT NULL,
-  `img_id` int(11) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `blog_id_fk_idx` (`blog_id`),
-  KEY `img_id_fk_idx` (`img_id`),
-  CONSTRAINT `blog_id_fk` FOREIGN KEY (`blog_id`) REFERENCES `blog` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `img_id_fk` FOREIGN KEY (`img_id`) REFERENCES `img` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE=InnoDB AUTO_INCREMENT=225 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+LOCK TABLES `blog_info` WRITE;
+/*!40000 ALTER TABLE `blog_info` DISABLE KEYS */;
+INSERT INTO `blog_info` VALUES (225,'Unity在代码中为Material设置Texture,场景中没有更新Texture,加长表踢踢踢踢踢踢踢踢','2019-03-11 15:42:11',15,920,309,'2019-03-23 18:01:59',0,'今天发现了一个问题,就是通过代码来为Material设置法线贴图,但是设置后没有效果,需要在场景中来回切换一下才可以.如图所示:\n这是我Test里面的代码:\n[MenuItem(\"Test/Test\"',1236),(226,'测试','2019-03-22 17:09:04',0,7,310,'2019-03-22 17:09:04',0,'hahahah',1249),(227,'测试','2019-03-22 17:09:07',0,7,311,'2019-03-22 17:09:07',0,'hahahah',1250),(228,'测试','2019-03-22 17:09:09',0,7,312,'2019-03-22 17:09:09',0,'hahahah',1251),(229,'测试','2019-03-22 17:09:11',0,7,313,'2019-03-22 17:56:42',0,'hahahah',1252);
+/*!40000 ALTER TABLE `blog_info` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
--- Table structure for table `comment`
+-- Dumping data for table `comment`
 --
 
-DROP TABLE IF EXISTS `comment`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
-CREATE TABLE `comment` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `content` varchar(500) NOT NULL,
-  `parent_id` int(11) NOT NULL,
-  `time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `blog_id` int(11) NOT NULL,
-  `user_id` varchar(32) NOT NULL,
-  `deleted` tinyint(1) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `user_id_fk_idx` (`user_id`),
-  CONSTRAINT `user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE=InnoDB AUTO_INCREMENT=110 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+LOCK TABLES `comment` WRITE;
+/*!40000 ALTER TABLE `comment` DISABLE KEYS */;
+INSERT INTO `comment` VALUES (110,'太多空白格',-1,'2019-03-11 10:28:18',308,'00d6eb5050c4c14c53ebc8f81d79947f',0),(111,'是的',110,'2019-03-11 14:09:58',308,'00d6eb5050c4c14c53ebc8f81d79947f',0),(112,'打算',-1,'2019-03-11 17:31:43',309,'3b50bb3b4ee0434899dbcd0f7420f6b1',0);
+/*!40000 ALTER TABLE `comment` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
--- Table structure for table `img`
+-- Dumping data for table `img`
 --
 
-DROP TABLE IF EXISTS `img`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
-CREATE TABLE `img` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `small` varchar(200) COLLATE utf8_bin DEFAULT NULL,
-  `medium` varchar(200) COLLATE utf8_bin DEFAULT NULL,
-  `large` varchar(200) COLLATE utf8_bin DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1228 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-/*!40101 SET character_set_client = @saved_cs_client */;
+LOCK TABLES `img` WRITE;
+/*!40000 ALTER TABLE `img` DISABLE KEYS */;
+INSERT INTO `img` VALUES (1231,NULL,NULL,NULL),(1236,'https://ws1.sinaimg.cn/thumbnail/006nw0Eagy1g0yw9rthufj31hc0u0n1y.jpg','https://ws1.sinaimg.cn/mw690/006nw0Eagy1g0yw9rthufj31hc0u0n1y.jpg','https://ws1.sinaimg.cn/large/006nw0Eagy1g0yw9rthufj31hc0u0n1y.jpg'),(1237,'https://cdn6.aptoide.com/imgs/2/7/7/2776b78b928ebc67593d86e4e3323684_icon.png?w=240',NULL,NULL),(1239,NULL,NULL,NULL),(1243,NULL,NULL,NULL),(1244,NULL,NULL,NULL),(1245,NULL,NULL,NULL),(1246,NULL,NULL,NULL),(1247,NULL,NULL,NULL),(1248,NULL,NULL,NULL),(1249,NULL,NULL,NULL),(1250,NULL,NULL,NULL),(1251,NULL,NULL,NULL),(1252,NULL,NULL,NULL),(1288,NULL,NULL,NULL);
+/*!40000 ALTER TABLE `img` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
--- Table structure for table `tag`
+-- Dumping data for table `tag`
 --
 
-DROP TABLE IF EXISTS `tag`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
-CREATE TABLE `tag` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `tag_name` varchar(45) NOT NULL,
-  `img_id` int(11) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `tag_name_index` (`tag_name`),
-  KEY `img_id_fk_idx` (`img_id`),
-  KEY `tag_img_id_fk_idx` (`img_id`) /*!80000 INVISIBLE */,
-  CONSTRAINT `tag_img_id_fk` FOREIGN KEY (`img_id`) REFERENCES `img` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=769 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+LOCK TABLES `tag` WRITE;
+/*!40000 ALTER TABLE `tag` DISABLE KEYS */;
+INSERT INTO `tag` VALUES (773,'Unity',1237),(777,'中文',1243),(778,'电影',1244),(779,'电视剧',1245),(780,'小说',1246),(781,'音乐',1247),(782,'java',1248);
+/*!40000 ALTER TABLE `tag` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
--- Table structure for table `user`
+-- Dumping data for table `user`
 --
 
-DROP TABLE IF EXISTS `user`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
-CREATE TABLE `user` (
-  `id` varchar(32) NOT NULL,
-  `user_name` varchar(45) NOT NULL,
-  `avatar_img_id` int(11) NOT NULL,
-  `email` varchar(100) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `avatar_img_id_idx` (`avatar_img_id`),
-  CONSTRAINT `avatar_img_id` FOREIGN KEY (`avatar_img_id`) REFERENCES `img` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+LOCK TABLES `user` WRITE;
+/*!40000 ALTER TABLE `user` DISABLE KEYS */;
+INSERT INTO `user` VALUES ('00d6eb5050c4c14c53ebc8f81d79947f','空白格',1231,NULL),('12345678901234567890123456789012','name update test',1288,'email update'),('3b50bb3b4ee0434899dbcd0f7420f6b1','空白格',1239,NULL);
+/*!40000 ALTER TABLE `user` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Dumping events for database 'mywebsite'
@@ -185,4 +114,4 @@ CREATE TABLE `user` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-03-08 16:57:48
+-- Dump completed on 2019-03-25 15:59:26

@@ -22,7 +22,5 @@ public class Test {
 
     @org.junit.Test
     public void dummy() {
-        System.out.println(blogMapper.selectByPrimaryKey(1));
-        System.out.println(blogInfoMapper.selectByPrimaryKey(1));
     }
 }
