@@ -43,7 +43,6 @@ public class CommentService {
 //    }
 
     public int updateByPrimaryKeySelective(Comment comment){
-        comment.setTime(null);
         comment.setUserId(null);
         comment.setTime(null);
         comment.setBlogId(null);
