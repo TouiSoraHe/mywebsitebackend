@@ -63,6 +63,9 @@ public class UserService {
             imgService.updateByPrimaryKeySelective(img);
         }
         user.setAvatarImgId(null);
+        if(Strings.isNullOrEmpty(user.getEmail())){
+            user.setEmail(null);
+        }
         return mapper.updateByPrimaryKeySelective(user);
     }
 
