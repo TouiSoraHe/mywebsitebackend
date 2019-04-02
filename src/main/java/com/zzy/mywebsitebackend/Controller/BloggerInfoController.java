@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import java.io.IOException;
+
 @Controller
 @RequestMapping("/blogger-info")
 @Slf4j
@@ -29,7 +31,7 @@ public class BloggerInfoController {
 
     @RequestMapping(method = RequestMethod.PUT)
     @RequiresPermissions(logical = Logical.AND, value = {"Edit"})
-    public ResponseEntity updateBlog(@RequestBody @Validated BloggerInfo bloggerInfo){
+    public ResponseEntity updateBlog(@RequestBody @Validated BloggerInfo bloggerInfo) throws IOException {
         bloggerInfoService.updateBloggerInfo(bloggerInfo);
         return new ResponseEntity(HttpStatus.OK);
     }

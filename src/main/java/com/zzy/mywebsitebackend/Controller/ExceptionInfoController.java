@@ -39,7 +39,7 @@ public class ExceptionInfoController {
 
     @RequestMapping(value = "/{id}",method = RequestMethod.DELETE)
     @RequiresPermissions(logical = Logical.AND, value = {"Delete"})
-    public  ResponseEntity deleteBlog(@PathVariable("id")Long id){
+    public  ResponseEntity deleteBlog(@PathVariable("id")Long id) {
         if(exceptionInfoService.removeExceptionInfo(id)){
             return new ResponseEntity("删除成功",HttpStatus.OK);
         }else {

@@ -1,12 +1,13 @@
 package com.zzy.mywebsitebackend.Data.Entity;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class BloggerInfo {
     private String username;
     private String email;
-    private Map<String,String> contactInformation;
-    private Map<String,String> headImg;
+    private Map<String,String> contactInformation = new HashMap<>();
+    private Map<String,String> headImg = new HashMap<>();
 
     public String getUsername() {
         return username;

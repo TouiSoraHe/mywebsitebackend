@@ -2,7 +2,6 @@ package com.zzy.mywebsitebackend.Service;
 
 import com.alibaba.fastjson.JSON;
 import com.zzy.mywebsitebackend.Data.Entity.BloggerInfo;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -25,18 +24,17 @@ public class BloggerInfoService {
         return bloggerInfo;
     }
 
-    public void updateBloggerInfo(BloggerInfo bloggerInfo){
+    public void updateBloggerInfo(BloggerInfo bloggerInfo) throws IOException {
         this.bloggerInfo = bloggerInfo;
         saveToFile(this.bloggerInfo);
     }
 
-    private static BloggerInfo readFromFile() {
-        BloggerInfo ret = null;
+    private BloggerInfo readFromFile() {
+        BloggerInfo ret = new BloggerInfo();
         try {
-            ClassPathResource resource = new ClassPathResource("BloggerInfo.json");
-            ret = JSON.parseObject(Files.readAllBytes(Paths.get(resource.getURI())),BloggerInfo.class);
-            if (ret == null){
-                ret = new BloggerInfo();
+            BloggerInfo temp = JSON.parseObject(Files.readAllBytes(Paths.get("BloggerInfo.json")),BloggerInfo.class);
+            if (temp != null){
+                ret = temp;
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -50,18 +48,8 @@ public class BloggerInfoService {
         }
     }
 
-    private static boolean saveToFile(BloggerInfo bloggerInfo) {
-        try {
-            ClassPathResource resource = new ClassPathResource("BloggerInfo.json");
-            String json = JSON.toJSONString(bloggerInfo);
-            Files.write(Paths.get(resource.getURI()),json.getBytes());
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            return false;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
+    private void saveToFile(BloggerInfo bloggerInfo) throws IOException {
+        String json = JSON.toJSONString(bloggerInfo);
+        Files.write(Paths.get("BloggerInfo.json"),json.getBytes());
     }
 }

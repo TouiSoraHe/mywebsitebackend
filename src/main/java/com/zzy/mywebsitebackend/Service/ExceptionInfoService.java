@@ -3,7 +3,6 @@ package com.zzy.mywebsitebackend.Service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.zzy.mywebsitebackend.AOP.Entity.ExceptionInfo;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -11,28 +10,18 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Service
 public class ExceptionInfoService {
 
-    private List<ExceptionInfo> exceptionInfos = new ArrayList<>();
-    private Boolean updated = false;//代表exceptionInfos已经被修改了,但是尚未保存
-    private Timer timer = new Timer(true);
-    private long period = 1000;//每隔period毫秒,执行一次
-
-    private TimerTask task = new TimerTask() {
-        public void run() {
-            if(updated){
-                updated = !saveToFile(exceptionInfos);
-            }
-        }
-    };
+    private List<ExceptionInfo> exceptionInfos;
 
     @PostConstruct
     private void Init() {
-        exceptionInfos.addAll(readFromFile());
-        timer.schedule(task,period,period);
+        exceptionInfos = readFromFile();
     }
 
     public void addExceptionInfo(ExceptionInfo exceptionInfo){
@@ -40,7 +29,7 @@ public class ExceptionInfoService {
             exceptionInfo.setId(new Date().getTime());
         }
         exceptionInfos.add(exceptionInfo);
-        updated = true;
+        saveToFile(exceptionInfos);
     }
 
     /**
@@ -65,7 +54,7 @@ public class ExceptionInfoService {
         if(exceptionInfos.removeIf(item -> {
             return item.getId() == id;
         })){
-            updated = true;
+            saveToFile(exceptionInfos);
             return true;
         }
         return false;
@@ -74,8 +63,7 @@ public class ExceptionInfoService {
     private static List<ExceptionInfo> readFromFile() {
         List<ExceptionInfo> ret = new ArrayList<>();
         try {
-            ClassPathResource resource = new ClassPathResource("ExceptionInfo.json");
-            List<ExceptionInfo> temp = JSON.parseObject(Files.readAllBytes(Paths.get(resource.getURI())),new TypeReference<List<ExceptionInfo>>() {}.getType());
+            List<ExceptionInfo> temp = JSON.parseObject(Files.readAllBytes(Paths.get("ExceptionInfo.json")),new TypeReference<List<ExceptionInfo>>() {}.getType());
             if (temp!=null){
                 ret = temp;
             }
@@ -93,14 +81,16 @@ public class ExceptionInfoService {
 
     private static boolean saveToFile(List<ExceptionInfo> exceptionInfos) {
         try {
-            ClassPathResource resource = new ClassPathResource("ExceptionInfo.json");
             String json = JSON.toJSONString(exceptionInfos);
-            Files.write(Paths.get(resource.getURI()),json.getBytes());
+            Files.write(Paths.get("ExceptionInfo.json"),json.getBytes());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             return false;
         } catch (IOException e) {
             e.printStackTrace();
+            return false;
+        }catch (Exception e){
+            e.getStackTrace();
             return false;
         }
         return true;
