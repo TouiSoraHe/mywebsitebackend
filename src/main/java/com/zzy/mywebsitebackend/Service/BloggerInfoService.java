@@ -1,7 +1,7 @@
 package com.zzy.mywebsitebackend.Service;
 
 import com.alibaba.fastjson.JSON;
-import com.zzy.mywebsitebackend.Data.Entity.BloggerInfo;
+import com.alibaba.fastjson.JSONObject;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -13,26 +13,26 @@ import java.nio.file.Paths;
 @Service
 public class BloggerInfoService {
 
-    private BloggerInfo bloggerInfo;
+    private JSONObject bloggerInfo;
 
     @PostConstruct
     private void Init() {
         this.bloggerInfo = readFromFile();
     }
 
-    public BloggerInfo getBloggerInfo(){
+    public JSONObject getBloggerInfo(){
         return bloggerInfo;
     }
 
-    public void updateBloggerInfo(BloggerInfo bloggerInfo) throws IOException {
+    public void updateBloggerInfo(JSONObject bloggerInfo) throws IOException {
         this.bloggerInfo = bloggerInfo;
         saveToFile(this.bloggerInfo);
     }
 
-    private BloggerInfo readFromFile() {
-        BloggerInfo ret = new BloggerInfo();
+    private JSONObject readFromFile() {
+        JSONObject ret = new JSONObject();
         try {
-            BloggerInfo temp = JSON.parseObject(Files.readAllBytes(Paths.get("BloggerInfo.json")),BloggerInfo.class);
+            JSONObject temp = JSON.parseObject(new String(Files.readAllBytes(Paths.get("BloggerInfo.json"))));
             if (temp != null){
                 ret = temp;
             }
@@ -48,7 +48,7 @@ public class BloggerInfoService {
         }
     }
 
-    private void saveToFile(BloggerInfo bloggerInfo) throws IOException {
+    private void saveToFile(JSONObject bloggerInfo) throws IOException {
         String json = JSON.toJSONString(bloggerInfo);
         Files.write(Paths.get("BloggerInfo.json"),json.getBytes());
     }
